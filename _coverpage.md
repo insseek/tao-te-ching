@@ -8,5 +8,4 @@
 - 分享给喜欢《道德经》的朋友们
 - 关注里探。与你共同阅读思考进步
 
-[公众号](https://mp.weixin.qq.com/s/8U57cR89NLkfhzoiX_mFTw)
-[阅读](/README)
+[开始阅读](/99.md)
