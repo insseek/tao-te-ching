@@ -47,7 +47,7 @@ body[data-page="/00.md"] .markdown-section blockquote + p { }
 
 /* 中英切换：刻意做得不显眼——英文侧只有一个导览页，平时无需切换 */
 #tdn-lang {
-  position: fixed; top: 17px; right: 140px; z-index: 59;
+  position: fixed; bottom: 14px; right: 18px; z-index: 59;
   font: 500 11px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 #tdn-lang a {
@@ -57,4 +57,4 @@ body[data-page="/00.md"] .markdown-section blockquote + p { }
 #tdn-lang a:hover { opacity: 1; color: #cfe0ff; }
 body:not([data-page="/en.md"]) #tdn-lang a.zh { display: none; }
 body[data-page="/en.md"] #tdn-lang a.en { display: none; }
-@media (max-width: 780px) { #tdn-lang { right: auto; left: 14px; top: 14px; } }
+@media (max-width: 780px) { #tdn-lang { right: 12px; bottom: 12px; } }
