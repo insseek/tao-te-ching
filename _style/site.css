@@ -45,23 +45,16 @@ body[data-page="/00.md"] .markdown-section blockquote a:hover { color: var(--the
 body[data-page="/00.md"] .markdown-section p.ps,
 body[data-page="/00.md"] .markdown-section blockquote + p { }
 
-/* 中英切换（English 目前只提供导览页） */
+/* 中英切换：刻意做得不显眼——英文侧只有一个导览页，平时无需切换 */
 #tdn-lang {
-  position: fixed; top: 14px; right: 134px; z-index: 60;
-  display: inline-flex; align-items: center; gap: 2px; padding: 3px;
-  border-radius: 999px; backdrop-filter: blur(10px);
-  background: rgba(12,20,44,.72); border: 1px solid rgba(120,160,255,.30);
-  font: 600 12.5px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  position: fixed; top: 17px; right: 140px; z-index: 59;
+  font: 500 11px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 #tdn-lang a {
-  color: #9fb3d6; text-decoration: none; padding: 5px 12px;
-  border-radius: 999px; letter-spacing: .06em; transition: .2s;
+  color: #8fa3c6; opacity: .34; text-decoration: none;
+  letter-spacing: .14em; padding: 4px 6px; transition: .25s;
 }
-#tdn-lang a:hover { color: #eaf1ff; }
-body:not([data-page="/en.md"]) #tdn-lang a.zh,
-body[data-page="/en.md"] #tdn-lang a.en {
-  color: #06122b; background: linear-gradient(135deg, #9ec5ff, #d9b8ff);
-}
-@media (max-width: 780px) {
-  #tdn-lang { right: auto; left: 14px; top: 12px; }
-}
+#tdn-lang a:hover { opacity: 1; color: #cfe0ff; }
+body:not([data-page="/en.md"]) #tdn-lang a.zh { display: none; }
+body[data-page="/en.md"] #tdn-lang a.en { display: none; }
+@media (max-width: 780px) { #tdn-lang { right: auto; left: 14px; top: 14px; } }
