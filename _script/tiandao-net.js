@@ -316,11 +316,44 @@
     var DEF = '点任一组，读它的原文、评说与牵连；或点上方核心词，点亮全网。';
     readout.innerHTML = DEF;
 
+    var legend = document.createElement('div');
+    legend.className = 'tdn-legend';
+    legend.innerHTML = '<span class="tdn-title">天网恢恢，疏而不失</span>' +
+      ['一', '二', '三', '四'].map(function (d) {
+        return '<button class="tdn-leg" data-dept="' + d + '" style="--c:' + COLOR[d] + '">' +
+          '<b>' + d + '</b>' + SHORT[d] + '<i>' + DATA.nodes.filter(function (n) { return n.dept === d; }).length + ' 组</i></button>';
+      }).join('');
+
     function reset() {
       Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('on'); });
       all.classList.add('on');
     }
-    all.onclick = function () { reset(); highlight(null); close(); readout.innerHTML = DEF; };
+    function clearLeg() {
+      Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (x) { x.classList.remove('on'); });
+    }
+    function resetAll() { reset(); clearLeg(); }
+    all.onclick = function () { resetAll(); highlight(null); close(); readout.innerHTML = DEF; };
+
+    Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (btn) {
+      btn.onclick = function () {
+        var d = btn.getAttribute('data-dept');
+        var on = btn.classList.contains('on');
+        reset(); close();
+        if (on) { clearLeg(); highlight(null); readout.innerHTML = DEF; return; }
+        clearLeg(); btn.classList.add('on');
+        var ids = DATA.nodes.filter(function (n) { return n.dept === d; }).map(function (n) { return n.id; });
+        highlight(ids);
+        readout.innerHTML = '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>' +
+          '　共 ' + ids.length + ' 组：' +
+          ids.map(function (i) {
+            var n = byId[i];
+            return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' + i + ' ' + esc(n.name) + '</button>';
+          }).join('');
+        Array.prototype.forEach.call(readout.querySelectorAll('.tdn-jump'), function (x) {
+          x.onclick = function () { open(x.getAttribute('data-id')); };
+        });
+      };
+    });
     words.forEach(function (w, k) {
       bar.children[k + 1].onclick = function () {
         Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('on'); });
@@ -338,11 +371,6 @@
         });
       };
     });
-    var legend = document.createElement('div');
-    legend.className = 'tdn-legend';
-    legend.innerHTML = ['一', '二', '三', '四'].map(function (d) {
-      return '<span style="--c:' + COLOR[d] + '"><b>' + d + '</b>' + SHORT[d] + '</span>';
-    }).join('');
     host.insertBefore(bar, ctx.stage);
     host.insertBefore(legend, ctx.stage);
     host.insertBefore(readout, ctx.stage);
@@ -356,7 +384,7 @@
           '　收录 <b>' + n.chs.length + '</b> 章 / <b>' + n.n + '</b> 句　·　点它读原文';
       });
       g.addEventListener('mouseleave', function () {
-        if (!drawer.classList.contains('open')) { highlight(null); reset(); readout.innerHTML = DEF; }
+        if (!drawer.classList.contains('open')) { highlight(null); resetAll(); readout.innerHTML = DEF; }
       });
       g.addEventListener('click', function () { open(id); });
     });
