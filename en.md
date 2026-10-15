@@ -80,9 +80,9 @@ Useful knowledge should be copied and spread widely. But to copy wholesale and c
 
 The site is in Chinese. The sidebar is your map.
 
-- **Chapter by chapter** → 里探《道德经》原文注释评说 (01–81)
-- **The grouping and evaluation** → 里探《道德经》原文结构化 (88)
-- **The re-edition** → 里探《道德经》新编 (00)
-- **The whole structure at a glance** → 天网恢恢 (the net)
+- **Chapter by chapter** → [里探《道德经》原文注释评说](01.md) (01–81)
+- **The grouping and evaluation** → [里探《道德经》原文结构化](88.md) (88)
+- **The re-edition** → [里探《道德经》新编](00.md) (00)
+- **The whole structure at a glance** → [天网恢恢](tian-wang.html ':target=_self') (the net)
 
 If the text interests you, the way in is Chinese — and the *Daodejing* is one of the shortest and most rewarding texts to begin with.
