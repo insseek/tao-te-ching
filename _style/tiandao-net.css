@@ -1,0 +1,57 @@
+/* 天道大网 · 关系图 */
+.tdn-wrap {
+  position: relative; margin: 1.2rem 0 2rem; padding: 10px;
+  border-radius: 18px; overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, #16224a 0%, #080d1c 60%, #04060f 100%);
+  box-shadow: 0 0 0 1px rgba(120,160,255,.18), 0 18px 60px -18px rgba(30,60,160,.75),
+              inset 0 0 90px rgba(60,110,255,.08);
+}
+.tdn-svg { display: block; width: 100%; height: auto; }
+.tdn-node { transition: opacity .25s; }
+
+.tdn-chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center;
+  padding: 10px 8px 4px; position: relative; z-index: 2; }
+.tdn-toggles { padding: 6px 8px 12px; }
+.tdn-chip {
+  font: 500 13px/1.5 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #b9c9e8; background: rgba(120,160,255,.09);
+  border: 1px solid rgba(120,160,255,.26); border-radius: 999px;
+  padding: 5px 13px; cursor: pointer; letter-spacing: .05em;
+  transition: all .2s;
+}
+.tdn-chip:hover { color: #eaf1ff; border-color: rgba(150,190,255,.6);
+  background: rgba(120,160,255,.2); transform: translateY(-1px); }
+.tdn-chip.on { color: #06122b; font-weight: 700;
+  background: linear-gradient(135deg, #9ec5ff, #d9b8ff);
+  border-color: transparent; box-shadow: 0 0 16px rgba(150,190,255,.55); }
+
+.tdn-note { font-size: .84em; color: #7f8fb0; text-align: center; margin: -.4rem 0 1.4rem; }
+@media (max-width: 640px) {
+  .tdn-chip { font-size: 12px; padding: 4px 10px; }
+  .tdn-wrap { border-radius: 12px; }
+}
+
+/* 部图例 */
+.tdn-legend { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center;
+  margin: 0 0 10px; font-size: 13.5px; letter-spacing: .04em; }
+.tdn-legend span { color: var(--c); display: inline-flex; align-items: center; gap: 7px; }
+.tdn-legend span::before { content: ''; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--c); box-shadow: 0 0 10px var(--c); }
+
+/* 信息栏 */
+.tdn-readout { position: relative; z-index: 2; margin: 2px 12px 6px; padding: 9px 14px;
+  min-height: 2.6em; border-radius: 10px; text-align: center; line-height: 1.7;
+  font-size: 13.5px; color: #93a6c8;
+  background: rgba(120,160,255,.06); border: 1px solid rgba(120,160,255,.14); }
+.tdn-readout b { color: #dbe7ff; }
+.tdn-tag { display: inline-block; margin: 2px 5px 0 0; padding: 1px 9px;
+  border: 1px solid; border-radius: 999px; font-size: 12.5px; }
+
+/* 天道大网页：内容栏加宽（其他页不受影响） */
+.content.tdn-wide .markdown-section {
+  --content-max-width: 86rem;
+  max-width: calc(100% - 2rem);
+}
+@media (max-width: 900px) {
+  .content.tdn-wide .markdown-section { --content-max-width: 100%; }
+}
