@@ -9,10 +9,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="icon" href="_media/favicon.jpg">
   <link rel="stylesheet" href="_style/docsify@5.min.css">
+  <style>
+    /* 天道大网入口 */
+    #tdn-entry {
+      position: fixed; top: 14px; right: 16px; z-index: 60;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px 8px 13px; border-radius: 999px; text-decoration: none;
+      font: 600 13.5px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: .06em; color: #cfe0ff;
+      background: rgba(12,20,44,.72); border: 1px solid rgba(120,160,255,.38);
+      backdrop-filter: blur(10px); box-shadow: 0 4px 22px -8px rgba(40,80,200,.9);
+      transition: all .22s;
+    }
+    #tdn-entry::before {
+      content: ''; width: 11px; height: 11px; border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 0 22%, #7fb4ff 30%, #2a5bd7 100%);
+      box-shadow: 0 0 10px #6ea8ff;
+    }
+    #tdn-entry:hover {
+      color: #fff; border-color: rgba(150,190,255,.85);
+      background: rgba(30,50,110,.9); transform: translateY(-1px);
+      box-shadow: 0 8px 26px -8px rgba(70,120,255,1);
+    }
+    @media (max-width: 640px) { #tdn-entry { font-size: 12px; padding: 6px 12px 6px 10px; } }
+  </style>
 </head>
 
 <body>
   <div id="app"></div>
+
+  <a id="tdn-entry" href="wang.html" title="天道大网：22 组、源流、共章相连">天道大网</a>
   <script>
     window.$docsify = {
       name: '里探《道德经》新编',

@@ -45,7 +45,7 @@
   }
   function verseHTML(line) {
     return esc(line).replace(/（([一二三四五六七八九十]+)）/g, function (m, cn) {
-      return '<a class="tdn-ch" href="' + pad(cn2num(cn)) + '.md" title="第' + cn + '章 · 原文注释评说">' + m + '</a>';
+      return '<a class="tdn-ch" href="index.html#/' + pad(cn2num(cn)) + '" title="第' + cn + '章 · 原文注释评说">' + m + '</a>';
     });
   }
 
@@ -228,7 +228,7 @@
         '<span class="tdn-badge" style="--c:' + c + '">' + n.dept + '部　' + SHORT[n.dept] + '</span>' +
         '<h3>' + esc(id) + '　' + esc(n.name) + '</h3>' +
         '<p class="tdn-meta">收录 <b>' + n.chs.length + '</b> 章 · <b>' + n.n + '</b> 句　' +
-        n.chs.map(function (x) { return '<a class="tdn-ch" href="' + pad(x) + '.md">' + pad(x) + '</a>'; })
+        n.chs.map(function (x) { return '<a class="tdn-ch" href="index.html#/' + pad(x) + '">' + pad(x) + '</a>'; })
           .join('<span class="tdn-sep">·</span>') + '</p>';
       body.innerHTML = '<p class="tdn-loading">正在读取原文…</p>';
       drawer.classList.add('open');
@@ -273,12 +273,12 @@
           });
           flush();
         } else {
-          vh = '<p class="tdn-none">未能读取 00.md，请直接看 <a href="00.md">新编</a>。</p>';
+          vh = '<p class="tdn-none">未能读取原文，请直接看 <a href="index.html#/00">新编</a>。</p>';
         }
         body.innerHTML =
           '<h4>原文 · 评说</h4>' + vh +
           relHTML +
-          '<a class="tdn-goto" href="00.md">在《里探《道德经》新编》中阅读 →</a>';
+          '<a class="tdn-goto" href="index.html#/00">在《里探《道德经》新编》中阅读 →</a>';
         Array.prototype.forEach.call(body.querySelectorAll('.tdn-jump'), function (b) {
           b.onclick = function () { open(b.getAttribute('data-id')); };
         });
@@ -341,7 +341,7 @@
     var legend = document.createElement('div');
     legend.className = 'tdn-legend';
     legend.innerHTML = ['一', '二', '三', '四'].map(function (d) {
-      return '<span style="--c:' + COLOR[d] + '"><b>' + d + '</b>' + SHORT[d] + '<i>' + SEQ[d] + '</i></span>';
+      return '<span style="--c:' + COLOR[d] + '"><b>' + d + '</b>' + SHORT[d] + '</span>';
     }).join('');
     host.insertBefore(bar, ctx.stage);
     host.insertBefore(legend, ctx.stage);
