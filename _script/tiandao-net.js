@@ -1,7 +1,7 @@
 /* ============================================================
    天道大网 · 里探《道德经》新编 关系图
    「天网恢恢，疏而不失」——道生一，一生二，二生三，三生万物
-   点节点即读原文；顺着连线可走遍全网。
+   点节点即读原文、评说与牵连；顺着连线可走遍全网。
    ============================================================ */
 (function () {
   var DATA = {"depts": [{"key": "一", "name": "道生万物论（宇宙起源）"}, {"key": "二", "name": "道的属性和规律（自然规律）"}, {"key": "三", "name": "修身成圣（尊道不争）"}, {"key": "四", "name": "治国取天下（尊道无为）"}], "nodes": [{"id": "A1", "name": "道生万物", "dept": "一", "chs": [1, 4, 6, 25, 40, 42, 51, 52], "n": 14}, {"id": "B1", "name": "道法自然", "dept": "二", "chs": [6, 7, 14, 16, 21, 25, 34, 37, 39, 40, 58], "n": 12}, {"id": "B2", "name": "无之以为用", "dept": "二", "chs": [4, 5, 11, 45], "n": 4}, {"id": "B3", "name": "似或存（寂寥、惚恍）", "dept": "二", "chs": [4, 14, 21, 35], "n": 6}, {"id": "B4", "name": "道隐无名（不彰显）", "dept": "二", "chs": [27, 32, 41, 45, 67, 78], "n": 7}, {"id": "B5", "name": "玄德（生而不有，养而不为主，利而不害）", "dept": "二", "chs": [2, 8, 10, 21, 34, 41, 51, 81], "n": 10}, {"id": "B6", "name": "玄同（包容 无相 中和）", "dept": "二", "chs": [4, 5, 32, 55, 56, 62, 79], "n": 9}, {"id": "B7", "name": "柔弱胜刚强（由下向上）", "dept": "二", "chs": [2, 22, 26, 32, 36, 39, 43, 45, 55, 61, 63, 64, 66, 73, 76, 78], "n": 23}, {"id": "B8", "name": "满招损（由上向下）", "dept": "二", "chs": [9, 12, 23, 24, 30, 42, 55, 77, 81], "n": 12}, {"id": "C1", "name": "守道抱一", "dept": "三", "chs": [10, 15, 20, 23, 41, 52, 54, 70], "n": 18}, {"id": "C2", "name": "知常全生", "dept": "三", "chs": [16, 33, 50, 52, 55, 56, 72, 81], "n": 14}, {"id": "C3", "name": "知足知止", "dept": "三", "chs": [15, 24, 29, 32, 33, 42, 44, 46, 47, 52, 53, 58, 77], "n": 16}, {"id": "C4", "name": "常善救人", "dept": "三", "chs": [27, 49, 79], "n": 6}, {"id": "C5", "name": "不争之得：柔弱胜刚强", "dept": "三", "chs": [7, 13, 22, 28, 63, 66, 67, 71], "n": 18}, {"id": "D1", "name": "守道不失", "dept": "四", "chs": [25, 32, 35, 59, 62], "n": 6}, {"id": "D2", "name": "无为而治：无事、希言", "dept": "四", "chs": [2, 5, 10, 13, 17, 23, 29, 37, 43, 48, 57, 58, 60, 64], "n": 19}, {"id": "D3", "name": "不崇德、不尚贤、不见可欲", "dept": "四", "chs": [12, 18, 19, 38], "n": 8}, {"id": "D4", "name": "愚民", "dept": "四", "chs": [3, 65], "n": 5}, {"id": "D5", "name": "小国寡民", "dept": "四", "chs": [80], "n": 1}, {"id": "D6", "name": "谦下之得：柔弱胜刚强", "dept": "四", "chs": [26, 36, 39, 42, 61, 75, 78], "n": 9}, {"id": "D7", "name": "不滥杀、不用威", "dept": "四", "chs": [72, 74], "n": 2}, {"id": "D8", "name": "不以兵强天下（不得已而用）", "dept": "四", "chs": [30, 31, 46, 68, 69], "n": 9}], "radial": [["A1", "C1"], ["A1", "D1"], ["B1", "C2"], ["B1", "D2"], ["B4", "D3"], ["B5", "D8"], ["B6", "C4"], ["B7", "C5"], ["B7", "D6"], ["B8", "C3"], ["B8", "D7"]], "chord": [{"a": "A1", "b": "B1", "w": 3, "chs": [6, 25, 40]}, {"a": "A1", "b": "C3", "w": 2, "chs": [42, 52]}, {"a": "B1", "b": "B3", "w": 2, "chs": [14, 21]}, {"a": "B1", "b": "B5", "w": 2, "chs": [21, 34]}, {"a": "B1", "b": "D2", "w": 2, "chs": [37, 58]}, {"a": "B2", "b": "B6", "w": 2, "chs": [4, 5]}, {"a": "B4", "b": "B7", "w": 3, "chs": [32, 45, 78]}, {"a": "B5", "b": "C1", "w": 2, "chs": [10, 41]}, {"a": "B5", "b": "D2", "w": 2, "chs": [2, 10]}, {"a": "B6", "b": "B7", "w": 2, "chs": [32, 55]}, {"a": "B6", "b": "C2", "w": 2, "chs": [55, 56]}, {"a": "B6", "b": "D1", "w": 2, "chs": [32, 62]}, {"a": "B7", "b": "C5", "w": 3, "chs": [22, 63, 66]}, {"a": "B7", "b": "D2", "w": 3, "chs": [2, 43, 64]}, {"a": "B7", "b": "D6", "w": 5, "chs": [26, 36, 39, 61, 78]}, {"a": "B8", "b": "C2", "w": 2, "chs": [55, 81]}, {"a": "B8", "b": "C3", "w": 3, "chs": [24, 42, 77]}, {"a": "C1", "b": "C3", "w": 2, "chs": [15, 52]}, {"a": "C1", "b": "D2", "w": 2, "chs": [10, 23]}, {"a": "C2", "b": "C3", "w": 2, "chs": [33, 52]}, {"a": "C3", "b": "D2", "w": 2, "chs": [29, 58]}], "core": {"不争": ["B5", "C5", "D2", "D6", "D8"], "无为": ["B1", "D2"], "生而不有": ["A1", "B5", "C1"], "玄德": ["B5", "C1", "D8"], "玄同": ["B6", "C2", "C4"], "柔弱": ["B7", "C5", "D6"], "损有余而补不足": ["B8", "C3", "D7"], "道隐无名": ["B4", "D3"], "无之以为用": ["B2"], "似或存": ["B3"], "知常": ["C2"], "知足知止": ["C3"], "贵以贱为本": ["B7", "D6"], "愚民": ["D4"], "小国寡民": ["D5"], "用兵": ["D8"]}};
@@ -32,14 +32,24 @@
     for (var k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]);
     return e;
   }
-  function txt(x, y, s, attrs) {
+  function tx(x, y, s, attrs) {
     var t = el('text', Object.assign({ x: x, y: y, 'font-family': '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif' }, attrs || {}));
     t.textContent = s; return t;
   }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function md(s) {
+    return esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+  }
+  function verseHTML(line) {
+    return esc(line).replace(/（([一二三四五六七八九十]+)）/g, function (m, cn) {
+      return '<a class="tdn-ch" href="' + pad(cn2num(cn)) + '.md" title="第' + cn + '章 · 原文注释评说">' + m + '</a>';
+    });
+  }
 
-  /* ---- 拉取 00.md，解析出每组的原文行（含原属章）---- */
-  var DOC = null, DOCP = null;
+  /* ---- 拉取 00.md：解析每组的原文（含小节）与里探评说 ---- */
+  var DOCP = null;
   function loadDoc() {
     if (DOCP) return DOCP;
     DOCP = fetch('00.md', { cache: 'no-cache' })
@@ -49,33 +59,30 @@
         t.split('\n').forEach(function (l) {
           var m = /^###\s+([A-D]\d+)[　\s]/.exec(l);
           if (m) { cur = m[1]; out[cur] = []; inPS = false; return; }
-          if (/^##\s/.test(l)) { cur = null; inPS = false; return; }
+          if (/^##\s/.test(l) || /^#\s/.test(l)) { cur = null; inPS = false; return; }
           if (!cur) return;
           var s = l.trim();
-          if (!s) return;                                   /* 空行不结束评说 */
+          if (!s) return;
           if (/^---/.test(s)) { inPS = false; return; }
-          if (/^里探评说/.test(s)) { inPS = true; return; }  /* 评说可跨多段 */
+          var pm = /^里探评说[：:]\s*([\s\S]*)$/.exec(s);
+          if (pm) { out[cur].push({ ps: pm[1] }); inPS = true; return; }
           if (inPS) {
-            /* 只有「小节标题」或「以（章号）结尾的原句」才算评说结束 */
-            if (/^\d+、/.test(s)) inPS = false;
-            else if (/（[一二三四五六七八九十]+）$/.test(s)) inPS = false;
-            else return;
+            if (/^\d+、/.test(s) || /（[一二三四五六七八九十]+）$/.test(s)) inPS = false;
+            else {                                  /* 评说续段：并到上一条 */
+              var last = out[cur][out[cur].length - 1];
+              if (last && last.ps !== undefined) last.ps += '\n' + s;
+              else out[cur].push({ ps: s });
+              return;
+            }
           }
           if (/^关键词/.test(s) || /^#{1,6}\s/.test(s)) return;
           if (/^\d+、/.test(s)) out[cur].push({ sub: s });
           else out[cur].push({ v: s });
         });
-        DOC = out; return out;
+        return out;
       })
-      .catch(function () { DOC = {}; return {}; });
+      .catch(function () { return {}; });
     return DOCP;
-  }
-  /* 把一行里的（二十五）变成指向 25.md 的链接 */
-  function verseHTML(line) {
-    return esc(line).replace(/（([一二三四五六七八九十]+)）/g, function (m, cn) {
-      var n = cn2num(cn);
-      return '<a class="tdn-ch" href="' + pad(n) + '.md" title="第' + cn + '章 原文注释评说">' + m + '</a>';
-    });
   }
 
   function build(host) {
@@ -120,13 +127,13 @@
       }));
       var ly0 = -H / 2 + 78, step = 72, lx0 = -W / 2 + 54;
       gRing.appendChild(el('circle', { cx: lx0 + 12, cy: ly0 + idx * step - 12, r: 9, fill: c, filter: 'url(#tdn-glow)' }));
-      gRing.appendChild(txt(lx0 + 34, ly0 + idx * step, NUM[d], {
+      gRing.appendChild(tx(lx0 + 34, ly0 + idx * step, NUM[d], {
         fill: c, 'font-size': 40, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
       }));
-      gRing.appendChild(txt(lx0 + 66, ly0 + idx * step - 2, SHORT[d], {
+      gRing.appendChild(tx(lx0 + 66, ly0 + idx * step - 2, SHORT[d], {
         fill: c, 'font-size': 24, 'font-weight': 600, 'text-anchor': 'start'
       }));
-      gRing.appendChild(txt(lx0 + 66, ly0 + idx * step + 22, SEQ[d], {
+      gRing.appendChild(tx(lx0 + 66, ly0 + idx * step + 22, SEQ[d], {
         fill: c, 'fill-opacity': 0.62, 'font-size': 17, 'text-anchor': 'start', 'letter-spacing': 2
       }));
     });
@@ -174,11 +181,11 @@
       if (vertical) { anchor = 'middle'; lx = p.x; ly = p.y < 0 ? p.y - r - 40 : p.y + r + 26; }
       else if (cos > 0) { anchor = 'start'; lx = p.x + r + 16; ly = p.y + 6; }
       else { anchor = 'end'; lx = p.x - r - 16; ly = p.y + 6; }
-      g.appendChild(txt(lx, ly, n.id, {
+      g.appendChild(tx(lx, ly, n.id, {
         fill: '#e8eefc', 'font-size': 23, 'font-weight': 700, 'text-anchor': anchor,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
-      g.appendChild(txt(lx, ly + 26, n.name.length > 16 ? n.name.slice(0, 16) + '…' : n.name, {
+      g.appendChild(tx(lx, ly + 26, n.name.length > 16 ? n.name.slice(0, 16) + '…' : n.name, {
         fill: c, 'font-size': 18.5, 'text-anchor': anchor, 'fill-opacity': 0.95,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
@@ -188,13 +195,16 @@
     var gc = el('g');
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#f8fafc', 'stroke-opacity': .38, 'stroke-width': 1.4 }));
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: '#f8fafc', opacity: .13, filter: 'url(#tdn-glow)' }));
-    gc.appendChild(txt(0, 16, '道', {
+    gc.appendChild(tx(0, 16, '道', {
       fill: '#f8fafc', 'font-size': 50, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
     }));
     gNode.appendChild(gc);
 
-    host.appendChild(svg);
-    return { svg: svg, nodeEls: nodeEls, gChord: gChord, gRadial: gRadial, gPulse: gPulse };
+    var stage = document.createElement('div');
+    stage.className = 'tdn-stage';
+    stage.appendChild(svg);
+    host.appendChild(stage);
+    return { svg: svg, stage: stage, nodeEls: nodeEls, gChord: gChord, gRadial: gRadial, gPulse: gPulse };
   }
 
   function mount(host) {
@@ -228,26 +238,22 @@
         '<span class="tdn-badge" style="--c:' + c + '">' + n.dept + '部　' + SHORT[n.dept] + '</span>' +
         '<h3>' + esc(id) + '　' + esc(n.name) + '</h3>' +
         '<p class="tdn-meta">收录 <b>' + n.chs.length + '</b> 章 · <b>' + n.n + '</b> 句　' +
-        n.chs.map(function (x) { return '<a class="tdn-ch" href="' + pad(x) + '.md">' + pad(x) + '</a>'; }).join('<span class="tdn-sep">·</span>') + '</p>';
+        n.chs.map(function (x) { return '<a class="tdn-ch" href="' + pad(x) + '.md">' + pad(x) + '</a>'; })
+          .join('<span class="tdn-sep">·</span>') + '</p>';
       body.innerHTML = '<p class="tdn-loading">正在读取原文…</p>';
       drawer.classList.add('open');
       panel.scrollTop = 0;
       highlight([id]);
 
-      /* 牵连：源→用 与 共章 */
-      var src = DATA.radial.filter(function (p) { return p[0] === id; }).map(function (p) { return p[1]; });
       var use = DATA.radial.filter(function (p) { return p[1] === id; }).map(function (p) { return p[0]; });
+      var src = DATA.radial.filter(function (p) { return p[0] === id; }).map(function (p) { return p[1]; });
       var near = DATA.chord.filter(function (e) { return e.a === id || e.b === id; })
         .sort(function (a, b) { return b.w - a.w; })
-        .map(function (e) {
-          var o = e.a === id ? e.b : e.a;
-          return { id: o, w: e.w, chs: e.chs };
-        });
+        .map(function (e) { return { id: e.a === id ? e.b : e.a, w: e.w }; });
       function chips(list) {
         return list.map(function (x) {
           var o = byId[x];
-          return '<button class="tdn-jump" data-id="' + x + '" style="--c:' + COLOR[o.dept] + '">' +
-            x + ' ' + esc(o.name) + '</button>';
+          return '<button class="tdn-jump" data-id="' + x + '" style="--c:' + COLOR[o.dept] + '">' + x + ' ' + esc(o.name) + '</button>';
         }).join('') || '<span class="tdn-none">—</span>';
       }
       var relHTML =
@@ -259,26 +265,29 @@
             var o = byId[e.id];
             return '<button class="tdn-jump" data-id="' + e.id + '" style="--c:' + COLOR[o.dept] + '">' +
               e.id + ' ' + esc(o.name) + ' <i>' + e.w + '章</i></button>';
-          }).join('') || '<span class="tdn-none">—</span>') +
-        '</div>';
+          }).join('') || '<span class="tdn-none">—</span>') + '</div>';
 
       loadDoc().then(function (doc) {
-        var lines = (doc && doc[id]) || [];
-        var vh = '';
-        if (lines.length) {
-          var open = false, buf = [];
-          function flush() {
-            if (buf.length) { vh += '<ol class="tdn-verses">' + buf.join('') + '</ol>'; buf = []; }
-          }
-          lines.forEach(function (l) {
-            if (l.sub) { flush(); vh += '<p class="tdn-sub">' + esc(l.sub) + '</p>'; }
-            else buf.push('<li>' + verseHTML(l.v) + '</li>');
+        var list = doc[id], vh = '';
+        if (list && list.length) {
+          var buf = [];
+          var flush = function () { if (buf.length) { vh += '<ol class="tdn-verses">' + buf.join('') + '</ol>'; buf = []; } };
+          list.forEach(function (it) {
+            if (it.ps !== undefined) {
+              flush();
+              vh += '<div class="tdn-ps">' + it.ps.split('\n').map(function (x) {
+                return '<p>' + md(x) + '</p>';
+              }).join('') + '</div>';
+            } else if (it.sub) { flush(); vh += '<p class="tdn-sub">' + esc(it.sub) + '</p>'; }
+            else buf.push('<li>' + verseHTML(it.v) + '</li>');
           });
           flush();
         } else {
-          vh = '<p class="tdn-none">未能读取 00.md 的原文，请直接看 <a href="00.md">新编</a>。</p>';
+          vh = '<p class="tdn-none">未能读取 00.md，请直接看 <a href="00.md">新编</a>。</p>';
         }
-        body.innerHTML = '<h4>原文</h4>' + vh + relHTML +
+        body.innerHTML =
+          '<h4>原文 · 评说</h4>' + vh +
+          relHTML +
           '<a class="tdn-goto" href="00.md">在《里探《道德经》新编》中阅读 →</a>';
         Array.prototype.forEach.call(body.querySelectorAll('.tdn-jump'), function (b) {
           b.onclick = function () { open(b.getAttribute('data-id')); };
@@ -307,14 +316,14 @@
     var all = document.createElement('button');
     all.className = 'tdn-chip on'; all.textContent = '全 网';
     bar.appendChild(all);
-    Object.keys(DATA.core).forEach(function (w) {
+    var words = Object.keys(DATA.core);
+    words.forEach(function (w) {
       var b = document.createElement('button');
-      b.className = 'tdn-chip'; b.textContent = w;
-      bar.appendChild(b);
+      b.className = 'tdn-chip'; b.textContent = w; bar.appendChild(b);
     });
     var readout = document.createElement('div');
     readout.className = 'tdn-readout';
-    var DEF = '点任一组，读它的原文与牵连；或点上方核心词，点亮全网。';
+    var DEF = '点任一组，读它的原文、评说与牵连；或点上方核心词，点亮全网。';
     readout.innerHTML = DEF;
 
     function reset() {
@@ -322,26 +331,25 @@
       all.classList.add('on');
     }
     all.onclick = function () { reset(); highlight(null); close(); readout.innerHTML = DEF; };
-    Object.keys(DATA.core).forEach(function (w) {
-      var b = bar.children[Object.keys(DATA.core).indexOf(w) + 1];
-      b.onclick = function () {
+    words.forEach(function (w, k) {
+      bar.children[k + 1].onclick = function () {
         Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('on'); });
-        b.classList.add('on'); close();
+        bar.children[k + 1].classList.add('on');
+        close();
         var ids = DATA.core[w];
         highlight(ids);
         readout.innerHTML = '<b style="color:#dbe7ff">「' + w + '」</b> 落在 ' + ids.length + ' 组：' +
           ids.map(function (i) {
             var n = byId[i];
-            return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' +
-              i + ' ' + esc(n.name) + '</button>';
+            return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' + i + ' ' + esc(n.name) + '</button>';
           }).join('');
         Array.prototype.forEach.call(readout.querySelectorAll('.tdn-jump'), function (x) {
           x.onclick = function () { open(x.getAttribute('data-id')); };
         });
       };
     });
-    host.insertBefore(bar, ctx.svg);
-    host.insertBefore(readout, ctx.svg.nextSibling);
+    host.insertBefore(bar, ctx.stage);
+    host.insertBefore(readout, ctx.stage);
 
     Object.keys(ctx.nodeEls).forEach(function (id) {
       var g = ctx.nodeEls[id], n = byId[id];
