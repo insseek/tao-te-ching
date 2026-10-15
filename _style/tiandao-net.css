@@ -186,4 +186,5 @@ body.tdn-standalone .tdn-toggles { padding: 4px 12px 10px; }
 .tdn-chip.tdn-all { color: #a9c2ee; border-style: dashed;
   border-color: rgba(150,190,255,.42); background: rgba(120,160,255,.05); }
 .tdn-chip.tdn-all:hover { border-style: solid; color: #eaf1ff; }
-.tdn-chip.tdn-all.on { color: #06122b; border-style: solid; }
+.tdn-chip.tdn-all.on { color: #06122b; border-style: solid;
+  background: linear-gradient(135deg, #9ec5ff, #d9b8ff); }

@@ -37,6 +37,8 @@
     var t = el('text', Object.assign({ x: x, y: y, 'font-family': '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif' }, attrs || {}));
     t.textContent = s; return t;
   }
+  /* 节点/提示显示组名时去掉（…）括注，短而清楚 */
+  function dispName(s) { return String(s).replace(/（[^）]*）/g, '').trim(); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function md(s) {
     return esc(s)
@@ -99,7 +101,7 @@
       });
     });
 
-    var W = 2560, H = 1290;
+    var W = 2760, H = 1300;
     var svg = el('svg', {
       viewBox: (-W / 2) + ' ' + (-H / 2) + ' ' + W + ' ' + H,
       class: 'tdn-svg', preserveAspectRatio: 'xMidYMid meet'
@@ -173,11 +175,12 @@
       else if (cos > 0) { anchor = 'start'; lx = p.x + r + 16; ly = p.y + 6; }
       else { anchor = 'end'; lx = p.x - r - 16; ly = p.y + 6; }
       g.appendChild(tx(lx, ly, n.id, {
-        fill: '#e8eefc', 'font-size': 26, 'font-weight': 700, 'text-anchor': anchor,
+        fill: '#ffffff', 'font-size': 31, 'font-weight': 700, 'text-anchor': anchor,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
-      g.appendChild(tx(lx, ly + 26, n.name.length > 16 ? n.name.slice(0, 16) + '…' : n.name, {
-        fill: c, 'font-size': 21, 'text-anchor': anchor, 'fill-opacity': 0.95,
+      var nm = dispName(n.name);
+      g.appendChild(tx(lx, ly + 34, nm.length > 14 ? nm.slice(0, 14) + '…' : nm, {
+        fill: c, 'font-size': 26, 'font-weight': 600, 'text-anchor': anchor, 'fill-opacity': 1,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
       gNode.appendChild(g); nodeEls[n.id] = g;
@@ -232,7 +235,7 @@
       var n = byId[id], c = COLOR[n.dept];
       head.innerHTML =
         '<span class="tdn-badge" style="--c:' + c + '">' + n.dept + '部　' + SHORT[n.dept] + '</span>' +
-        '<h3>' + esc(id) + '　' + esc(n.name) + '</h3>' +
+        '<h3>' + esc(id) + '　' + esc(dispName(n.name)) + '</h3>' +
         '<p class="tdn-meta">收录 <b>' + n.chs.length + '</b> 章 · <b>' + n.n + '</b> 句　' +
         n.chs.map(function (x) { return '<a class="tdn-ch" href="index.html#/' + pad(x) + '">' + pad(x) + '</a>'; })
           .join('<span class="tdn-sep">·</span>') + '</p>';
@@ -410,7 +413,7 @@
     /* 节点：悬停＝预览；移开＝回选中态；点击＝选中并读原文 */
     function nodeHTML(id) {
       var n = byId[id];
-      return '<b style="color:' + COLOR[n.dept] + '">' + id + '　' + esc(n.name) + '</b>' +
+      return '<b style="color:' + COLOR[n.dept] + '">' + id + '　' + esc(dispName(n.name)) + '</b>' +
         '　收录 <b>' + n.chs.length + '</b> 章 / <b>' + n.n + '</b> 句　·　点它读原文';
     }
     function openNode(id) { setSel([id], nodeHTML(id), null, null); open(id); }
