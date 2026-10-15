@@ -12,6 +12,7 @@
   var SEQ   = { '一': '道生一', '二': '一生二', '三': '二生三', '四': '三生万物' };
   var SHORT = { '一': '道生万物论', '二': '道的属性和规律', '三': '修身成圣', '四': '治国取天下' };
   var OFF   = { '一': 0, '二': Math.PI / 8, '三': 0, '四': Math.PI / 8 };
+  var AX = 1.72, AY = 1.0;   /* 横向拉宽，铺满宽屏 */
   var NS = 'http://www.w3.org/2000/svg';
   var CN = { 零: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
   var byId = {};
@@ -94,11 +95,11 @@
       var list = groups[d], R = RING[d], off = OFF[d];
       list.forEach(function (n, i) {
         var a = -Math.PI / 2 + off + (i * 2 * Math.PI) / list.length;
-        pos[n.id] = { x: Math.cos(a) * R, y: Math.sin(a) * R, a: a, r: 10 + Math.sqrt(n.n) * 3.1 };
+        pos[n.id] = { x: Math.cos(a) * R * AX, y: Math.sin(a) * R * AY, a: a, r: 11 + Math.sqrt(n.n) * 3.4 };
       });
     });
 
-    var W = 1980, H = 1520;
+    var W = 2560, H = 1290;
     var svg = el('svg', {
       viewBox: (-W / 2) + ' ' + (-H / 2) + ' ' + W + ' ' + H,
       class: 'tdn-svg', preserveAspectRatio: 'xMidYMid meet'
@@ -119,22 +120,11 @@
     var gRing = el('g'), gChord = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
     [gRing, gChord, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
 
-    order.forEach(function (d, idx) {
+    order.forEach(function (d) {
       var R = RING[d], c = COLOR[d];
-      gRing.appendChild(el('circle', {
-        cx: 0, cy: 0, r: R, fill: 'none', stroke: c, 'stroke-opacity': 0.26,
-        'stroke-width': 1.4, 'stroke-dasharray': '3 9'
-      }));
-      var ly0 = -H / 2 + 78, step = 72, lx0 = -W / 2 + 54;
-      gRing.appendChild(el('circle', { cx: lx0 + 12, cy: ly0 + idx * step - 12, r: 9, fill: c, filter: 'url(#tdn-glow)' }));
-      gRing.appendChild(tx(lx0 + 34, ly0 + idx * step, NUM[d], {
-        fill: c, 'font-size': 40, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
-      }));
-      gRing.appendChild(tx(lx0 + 66, ly0 + idx * step - 2, SHORT[d], {
-        fill: c, 'font-size': 24, 'font-weight': 600, 'text-anchor': 'start'
-      }));
-      gRing.appendChild(tx(lx0 + 66, ly0 + idx * step + 22, SEQ[d], {
-        fill: c, 'fill-opacity': 0.62, 'font-size': 17, 'text-anchor': 'start', 'letter-spacing': 2
+      gRing.appendChild(el('ellipse', {
+        cx: 0, cy: 0, rx: R * AX, ry: R * AY, fill: 'none', stroke: c,
+        'stroke-opacity': 0.26, 'stroke-width': 1.4, 'stroke-dasharray': '3 9'
       }));
     });
 
@@ -182,11 +172,11 @@
       else if (cos > 0) { anchor = 'start'; lx = p.x + r + 16; ly = p.y + 6; }
       else { anchor = 'end'; lx = p.x - r - 16; ly = p.y + 6; }
       g.appendChild(tx(lx, ly, n.id, {
-        fill: '#e8eefc', 'font-size': 23, 'font-weight': 700, 'text-anchor': anchor,
+        fill: '#e8eefc', 'font-size': 26, 'font-weight': 700, 'text-anchor': anchor,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
       g.appendChild(tx(lx, ly + 26, n.name.length > 16 ? n.name.slice(0, 16) + '…' : n.name, {
-        fill: c, 'font-size': 18.5, 'text-anchor': anchor, 'fill-opacity': 0.95,
+        fill: c, 'font-size': 21, 'text-anchor': anchor, 'fill-opacity': 0.95,
         style: 'paint-order:stroke;stroke:#04060f;stroke-width:5'
       }));
       gNode.appendChild(g); nodeEls[n.id] = g;
@@ -196,7 +186,7 @@
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#f8fafc', 'stroke-opacity': .38, 'stroke-width': 1.4 }));
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: '#f8fafc', opacity: .13, filter: 'url(#tdn-glow)' }));
     gc.appendChild(tx(0, 16, '道', {
-      fill: '#f8fafc', 'font-size': 50, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
+      fill: '#f8fafc', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
     }));
     gNode.appendChild(gc);
 
@@ -348,7 +338,13 @@
         });
       };
     });
+    var legend = document.createElement('div');
+    legend.className = 'tdn-legend';
+    legend.innerHTML = ['一', '二', '三', '四'].map(function (d) {
+      return '<span style="--c:' + COLOR[d] + '"><b>' + d + '</b>' + SHORT[d] + '<i>' + SEQ[d] + '</i></span>';
+    }).join('');
     host.insertBefore(bar, ctx.stage);
+    host.insertBefore(legend, ctx.stage);
     host.insertBefore(readout, ctx.stage);
 
     Object.keys(ctx.nodeEls).forEach(function (id) {
