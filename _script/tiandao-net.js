@@ -324,69 +324,93 @@
           '<b>' + d + '</b>' + SHORT[d] + '<i>' + DATA.nodes.filter(function (n) { return n.dept === d; }).length + ' 组</i></button>';
       }).join('');
 
-    function reset() {
-      Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('on'); });
-      all.classList.add('on');
-    }
-    function clearLeg() {
-      Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (x) { x.classList.remove('on'); });
-    }
-    function resetAll() { reset(); clearLeg(); }
-    all.onclick = function () { resetAll(); highlight(null); close(); readout.innerHTML = DEF; };
+    /* ---------- 选中态（持久）vs 悬停预览（临时）----------
+       选中态由「全网／核心词／部图例／点节点」设定，一直保持；
+       悬停只作预览，移开即回到选中态——不再把选中冲掉。 */
+    var SEL = { ids: null, html: DEF, leg: null, chip: null };
 
+    function jumpHTML(ids) {
+      return ids.map(function (i) {
+        var n = byId[i];
+        return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' +
+          i + ' ' + esc(n.name) + '</button>';
+      }).join('');
+    }
+    function wireJumps(root) {
+      Array.prototype.forEach.call(root.querySelectorAll('.tdn-jump'), function (x) {
+        x.onclick = function () { openNode(x.getAttribute('data-id')); };
+      });
+    }
+    function paintSel() {
+      highlight(SEL.ids);
+      readout.innerHTML = SEL.html;
+      Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (x) {
+        x.classList.toggle('on', x === SEL.leg);
+      });
+      Array.prototype.forEach.call(bar.children, function (x) {
+        if (x === all) x.classList.toggle('on', !SEL.chip && !SEL.leg);
+        else x.classList.toggle('on', x === SEL.chip);
+      });
+      wireJumps(readout);
+    }
+    function setSel(ids, html, leg, chip) {
+      SEL = { ids: ids, html: html, leg: leg || null, chip: chip || null };
+      paintSel();
+    }
+    function deptSel(d) {
+      var ids = DATA.nodes.filter(function (n) { return n.dept === d; }).map(function (n) { return n.id; });
+      return ids;
+    }
+
+    /* 全网 */
+    all.onclick = function () { close(); setSel(null, DEF, null, all); };
+
+    /* 部图例：点选 / 再点取消 */
     Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (btn) {
       btn.onclick = function () {
         var d = btn.getAttribute('data-dept');
-        var on = btn.classList.contains('on');
-        reset(); close();
-        if (on) { clearLeg(); highlight(null); readout.innerHTML = DEF; return; }
-        clearLeg(); btn.classList.add('on');
-        var ids = DATA.nodes.filter(function (n) { return n.dept === d; }).map(function (n) { return n.id; });
-        highlight(ids);
-        readout.innerHTML = '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>' +
-          '　共 ' + ids.length + ' 组：' +
-          ids.map(function (i) {
-            var n = byId[i];
-            return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' + i + ' ' + esc(n.name) + '</button>';
-          }).join('');
-        Array.prototype.forEach.call(readout.querySelectorAll('.tdn-jump'), function (x) {
-          x.onclick = function () { open(x.getAttribute('data-id')); };
-        });
+        close();
+        if (SEL.leg === btn) { setSel(null, DEF, null, all); return; }
+        var ids = deptSel(d);
+        setSel(ids,
+          '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>　共 ' + ids.length + ' 组：' + jumpHTML(ids),
+          btn, null);
       };
     });
+
+    /* 核心词 */
     words.forEach(function (w, k) {
       bar.children[k + 1].onclick = function () {
-        Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('on'); });
-        bar.children[k + 1].classList.add('on');
         close();
         var ids = DATA.core[w];
-        highlight(ids);
-        readout.innerHTML = '<b style="color:#dbe7ff">「' + w + '」</b> 落在 ' + ids.length + ' 组：' +
-          ids.map(function (i) {
-            var n = byId[i];
-            return '<button class="tdn-jump" data-id="' + i + '" style="--c:' + COLOR[n.dept] + '">' + i + ' ' + esc(n.name) + '</button>';
-          }).join('');
-        Array.prototype.forEach.call(readout.querySelectorAll('.tdn-jump'), function (x) {
-          x.onclick = function () { open(x.getAttribute('data-id')); };
-        });
+        setSel(ids, '<b style="color:#dbe7ff">「' + w + '」</b> 落在 ' + ids.length + ' 组：' + jumpHTML(ids),
+          null, bar.children[k + 1]);
       };
     });
+
     host.insertBefore(bar, ctx.stage);
     host.insertBefore(legend, ctx.stage);
     host.insertBefore(readout, ctx.stage);
+
+    /* 节点：悬停＝预览；移开＝回选中态；点击＝选中并读原文 */
+    function nodeHTML(id) {
+      var n = byId[id];
+      return '<b style="color:' + COLOR[n.dept] + '">' + id + '　' + esc(n.name) + '</b>' +
+        '　收录 <b>' + n.chs.length + '</b> 章 / <b>' + n.n + '</b> 句　·　点它读原文';
+    }
+    function openNode(id) { setSel([id], nodeHTML(id), null, null); open(id); }
 
     Object.keys(ctx.nodeEls).forEach(function (id) {
       var g = ctx.nodeEls[id], n = byId[id];
       g.style.transition = 'opacity .25s';
       g.addEventListener('mouseenter', function () {
-        highlight([id]);
-        readout.innerHTML = '<b style="color:' + COLOR[n.dept] + '">' + id + '　' + esc(n.name) + '</b>' +
-          '　收录 <b>' + n.chs.length + '</b> 章 / <b>' + n.n + '</b> 句　·　点它读原文';
+        highlight([id]);                       /* 仅预览，不动 SEL */
+        readout.innerHTML = nodeHTML(id);
       });
       g.addEventListener('mouseleave', function () {
-        if (!drawer.classList.contains('open')) { highlight(null); resetAll(); readout.innerHTML = DEF; }
+        paintSel();                            /* 回到选中态 */
       });
-      g.addEventListener('click', function () { open(id); });
+      g.addEventListener('click', function () { openNode(id); });
     });
 
     var bar2 = document.createElement('div');

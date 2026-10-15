@@ -8,4 +8,4 @@
 - 分享给喜欢《道德经》的朋友们
 - 关注里探。与你共同阅读思考进步
 
-[开始阅读](/99.md)｜<a href="wang.html" target="_self">天网恢恢</a>
+[开始阅读](/99.md)｜<a href="tian-wang.html" target="_self">天网恢恢</a>
