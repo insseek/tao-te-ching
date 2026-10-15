@@ -2,7 +2,7 @@
 
 * [里探《道德经》新编](00.md)
 
-* <a href="wang.html" target="_self">天道大网：道生万物关系图</a>
+* <a href="wang.html" target="_self">天网恢恢：道生万物关系图</a>
 
 * [里探《道德经》新编说明](99.md)
 

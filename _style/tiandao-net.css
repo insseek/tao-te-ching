@@ -156,10 +156,12 @@ body.tdn-standalone .tdn-toggles { padding: 4px 12px 10px; }
   color: #8fa3c6; text-decoration: none; padding: 8px 14px; border-radius: 999px;
   background: rgba(120,160,255,.08); border: 1px solid rgba(120,160,255,.2); transition: .2s; }
 .tdn-back:hover { color: #dbe7ff; background: rgba(120,160,255,.2); }
-.tdn-quote { position: fixed; right: 18px; bottom: 18px; z-index: 30; margin: 0;
-  font: 400 12.5px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-  .tdn-quote { color: #55658a; letter-spacing: .1em; }
-@media (max-width: 900px) { .tdn-quote { display: none; } }
+.tdn-mark { position: fixed; left: 20px; top: 15px; z-index: 30; margin: 0;
+  font: 700 20px/1.15 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: .18em; color: #dce8ff; pointer-events: none; }
+.tdn-mark span { display: block; margin-top: 5px;
+  font-size: 12.5px; font-weight: 400; letter-spacing: .34em; color: #63779c; }
+@media (max-width: 1180px) { .tdn-mark { display: none; } }
 
 /* 部图例（全屏页横排） */
 .tdn-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; justify-content: center;
