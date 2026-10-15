@@ -118,6 +118,7 @@
     svg.appendChild(el('rect', { x: -W / 2, y: -H / 2, width: W, height: H, fill: 'url(#tdn-bg)' }));
 
     var gRing = el('g'), gChord = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
+    [gRing, gChord, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
     [gRing, gChord, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
 
     order.forEach(function (d) {
@@ -220,7 +221,12 @@
     function close() { drawer.classList.remove('open'); }
     drawer.querySelector('.tdn-x').onclick = close;
     drawer.querySelector('.tdn-mask').onclick = close;
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    var escReset = function () {};   /* 由 mount 后段接管 */
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (drawer.classList.contains('open')) close();
+      else escReset();
+    });
 
     function open(id) {
       var n = byId[id], c = COLOR[n.dept];
@@ -304,7 +310,8 @@
     var bar = document.createElement('div');
     bar.className = 'tdn-chips';
     var all = document.createElement('button');
-    all.className = 'tdn-chip on'; all.textContent = '全 网';
+    all.className = 'tdn-chip tdn-all on'; all.textContent = '↺ 全网';
+    all.title = '复位：看全网（也可点图面空白处或按 Esc）';
     bar.appendChild(all);
     var words = Object.keys(DATA.core);
     words.forEach(function (w) {
@@ -313,7 +320,7 @@
     });
     var readout = document.createElement('div');
     readout.className = 'tdn-readout';
-    var DEF = '点任一组，读它的原文、评说与牵连；或点上方核心词，点亮全网。';
+    var DEF = '点任一组，读它的原文、评说与牵连；点上方核心词或部名可点亮一片；点图面空白、按 Esc 或点「↺ 全网」回到全网。';
     readout.innerHTML = DEF;
 
     var legend = document.createElement('div');
@@ -362,15 +369,23 @@
       return ids;
     }
 
-    /* 全网 */
-    all.onclick = function () { close(); setSel(null, DEF, null, all); };
+    /* 全网（复位） */
+    function resetAll() { close(); setSel(null, DEF, null, null); }
+    all.onclick = resetAll;
+    escReset = resetAll;
+
+    /* 点图面空白 → 复位 */
+    ctx.svg.addEventListener('click', function (e) {
+      var tag = e.target && e.target.tagName;
+      if (tag === 'svg' || tag === 'rect') resetAll();
+    });
 
     /* 部图例：点选 / 再点取消 */
     Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (btn) {
       btn.onclick = function () {
         var d = btn.getAttribute('data-dept');
         close();
-        if (SEL.leg === btn) { setSel(null, DEF, null, all); return; }
+        if (SEL.leg === btn) { setSel(null, DEF, null, null); return; }
         var ids = deptSel(d);
         setSel(ids,
           '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>　共 ' + ids.length + ' 组：' + jumpHTML(ids),

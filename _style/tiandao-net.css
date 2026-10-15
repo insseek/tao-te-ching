@@ -181,3 +181,9 @@ body.tdn-standalone .tdn-toggles { padding: 4px 12px 10px; }
   align-items: center; font-size: 12.5px; letter-spacing: .04em; padding: 2px 12px 6px; }
 .tdn-leg::before { content: ''; width: 8px; height: 8px; border-radius: 50%;
   background: var(--c); box-shadow: 0 0 8px var(--c); align-self: center; }
+
+/* 复位键：与普通核心词区分 */
+.tdn-chip.tdn-all { color: #a9c2ee; border-style: dashed;
+  border-color: rgba(150,190,255,.42); background: rgba(120,160,255,.05); }
+.tdn-chip.tdn-all:hover { border-style: solid; color: #eaf1ff; }
+.tdn-chip.tdn-all.on { color: #06122b; border-style: solid; }
