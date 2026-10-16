@@ -14,14 +14,21 @@
   <div class="tdn-wrap" id="tiandao-net"></div>
 
   <a class="tdn-back" href="index.html#/00">← 返回《里探《道德经》新编》</a>
-  <button class="tdn-rot" id="tdn-rot" type="button" aria-label="横竖屏切换">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect x="2.7" y="7.7" width="18.6" height="9.2" rx="2.3"/>
-      <path d="M6.6 4.9A9.6 9.6 0 0 1 17.6 5.5"/>
-      <path d="M18.1 2.2v3.5h-3.5"/>
+  <button class="tdn-rot" id="tdn-rot" type="button" aria-label="切换横屏">
+    <!-- 目标方向：未旋转时指向横屏 -->
+    <svg class="i-land" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2.7" y="7.5" width="18.6" height="9" rx="2.3"/>
+      <path d="M6.8 4.7A9.5 9.5 0 0 1 17.5 5.3"/>
+      <path d="M18 2v3.5h-3.5"/>
     </svg>
-    <span class="lbl">横屏</span>
+    <!-- 已旋转时指向竖屏 -->
+    <svg class="i-port" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="7.5" y="2.7" width="9" height="18.6" rx="2.3"/>
+      <path d="M4.7 17.2A9.5 9.5 0 0 1 5.3 6.5"/>
+      <path d="M2 6h3.5v3.5"/>
+    </svg>
   </button>
 
   <script src="_script/tiandao-net.js"></script>
@@ -37,8 +44,7 @@
       function sync() {
         var rot = body.classList.contains('tdn-rot-on');
         body.classList.toggle('tdn-compact', rot || mq.matches);
-        var lbl = btn && btn.querySelector('.lbl');
-        if (lbl) lbl.textContent = rot ? '竖屏' : '横屏';
+        if (btn) btn.setAttribute('aria-label', rot ? '切换竖屏' : '切换横屏');
       }
       if (btn) {
         btn.addEventListener('click', function () {

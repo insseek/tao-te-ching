@@ -215,16 +215,14 @@ body.tdn-compact .tdn-readout { display: none; }
 .tdn-rot { display: none; }
 @media (orientation: portrait) {
   .tdn-rot {
-    display: inline-flex; align-items: center; gap: 7px;
+    display: inline-flex; align-items: center; justify-content: center;
     position: fixed; z-index: 60;
     right: 16px;
     bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    height: 38px; padding: 0 15px 0 12px;
-    border: 0; border-radius: 999px; cursor: pointer;
-    font: 600 13px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    letter-spacing: .04em; color: #eaf1ff;
-    background: rgba(38,52,86,.90);   /* 页面底色近黑（#04060f），
-                                         按钮必须比它明显亮，否则深色叠深色等于隐身 */
+    width: 44px; height: 44px;            /* 主流触控尺寸 */
+    padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+    color: #eaf1ff;
+    background: rgba(38,52,86,.90);       /* 页面底色近黑，按钮须明显更亮 */
     box-shadow: 0 8px 24px -6px rgba(0,0,0,.7),
                 0 0 20px -8px rgba(96,148,255,.95),
                 inset 0 0 0 1px rgba(150,190,255,.30);
@@ -233,8 +231,11 @@ body.tdn-compact .tdn-readout { display: none; }
     transition: transform .16s ease, background .16s ease;
     -webkit-tap-highlight-color: transparent;
   }
-  .tdn-rot:active { transform: scale(.94); background: rgba(58,78,124,.95); }
-  .tdn-rot svg { width: 17px; height: 17px; display: block; flex: none; }
+  .tdn-rot:active { transform: scale(.92); background: rgba(58,78,124,.95); }
+  .tdn-rot svg { width: 21px; height: 21px; display: block; }
+  .tdn-rot .i-port { display: none; }                       /* 未旋转 → 显示横屏图标 */
+  body.tdn-rot-on .tdn-rot .i-land { display: none; }       /* 已旋转 → 显示竖屏图标 */
+  body.tdn-rot-on .tdn-rot .i-port { display: block; }
 }
 
 /* 旋转本体：仅在竖屏启用。
