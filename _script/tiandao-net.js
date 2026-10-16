@@ -557,7 +557,7 @@
        常态只是"若有若无"，全貌要看不清；但一进来就全亮又太吵。
        故取中间值：能看出网的走向，又不夺节点与中央。
        已有选中（tdn-sel）时让路——那时的亮暗由选中态决定。 */
-    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18;
+    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_RING = 0.5;
     var hoverOn = false;
     /* 线的「常态」不是一个定值，取决于鼠标在不在 D 环里。
        这三个函数是唯一的出处——highlight() 也必须走它们，
@@ -578,6 +578,12 @@
       });
       Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         p.setAttribute('stroke-opacity', baseGlow());
+      });
+      /* 三条部的环也提一档：常态只有 0.26，几乎看不见，
+         鼠标进来时若只亮线不亮环，读者会不知道"环"这个层次存在。 */
+      Array.prototype.forEach.call(svg.querySelectorAll('.tdn-ring'), function (r) {
+        var base = +(r.getAttribute('data-base') || 0.26);
+        r.setAttribute('stroke-opacity', hoverOn ? HOVER_RING : base);
       });
     }
     /* D 环是椭圆（rx = R×AX，ry = R×AY），按椭圆方程判"圈内" */
