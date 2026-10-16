@@ -263,3 +263,9 @@ body.tdn-rot-on { overflow: hidden; }
   }
   .tdn-back { font-size: 12px; padding: 6px 12px; }
 }
+
+/* 抽屉打开时收起横屏按钮。
+   窄屏下 .tdn-panel 满宽、关闭键 .tdn-x 在面板右上角；
+   旋转后它与固定定位的横屏按钮落在同一角，会互相掩盖。
+   抽屉是阅读态，此时本就不需要横竖屏切换。 */
+body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: scale(.88); }

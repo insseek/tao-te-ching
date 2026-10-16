@@ -221,7 +221,11 @@
     var head = drawer.querySelector('.tdn-panel-head');
     var body = drawer.querySelector('.tdn-panel-body');
 
-    function close() { drawer.classList.remove('open'); }
+    /* 抽屉打开时，把横屏按钮收起来（窄屏面板满宽，按钮会压住抽屉的关闭键 ×） */
+    function close() {
+      drawer.classList.remove('open');
+      document.body.classList.remove('tdn-drawer-open');
+    }
     drawer.querySelector('.tdn-x').onclick = close;
     drawer.querySelector('.tdn-mask').onclick = close;
     var escReset = function () {};   /* 由 mount 后段接管 */
@@ -241,6 +245,7 @@
           .join('<span class="tdn-sep">·</span>') + '</p>';
       body.innerHTML = '<p class="tdn-loading">正在读取原文…</p>';
       drawer.classList.add('open');
+      document.body.classList.add('tdn-drawer-open');
       panel.scrollTop = 0;
       highlight([id]);
 
