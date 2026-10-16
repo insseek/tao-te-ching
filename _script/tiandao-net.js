@@ -250,6 +250,7 @@
       var R = RING[d], c = COLOR[d];
       gRing.appendChild(el('ellipse', {
         class: 'tdn-ring tdn-ring-' + di,
+        'data-dept': d, 'data-base': 0.26,
         cx: 0, cy: 0, rx: R * AX, ry: R * AY, fill: 'none', stroke: c,
         'stroke-opacity': 0.26, 'stroke-width': 1.4, 'stroke-dasharray': '3 9'
       }));
@@ -617,12 +618,15 @@
       var set = {}; (ids || []).forEach(function (i) { set[i] = 1; });
       var on = Object.keys(set).length > 0;
       ctx.svg.classList.toggle('tdn-sel', on);   /* 有选中时，图面悬停不再提亮全网 */
+      /* 选的是"部"而不是某一组时：这一部的含义是"皆由道派生"，
+         故不点亮任何连线，只把该部的圆环与中央「道」亮出来。 */
+      var dsel = (SEL && SEL.leg) ? SEL.leg.getAttribute('data-dept') : null;
       DATA.nodes.forEach(function (n) {
         var g = ctx.nodeEls[n.id];
         /* A1「道生万物」没有节点元素——它就是中央的「道」。
            选中 A1 时让中央亮一档，而不是去碰不存在的节点。 */
         if (!g) {
-          if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && set['A1']));
+          if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && (set['A1'] || dsel)));
           return;
         }
         g.style.opacity = (!on || set[n.id]) ? 1 : 0.12;
@@ -636,21 +640,29 @@
         var s = a.split('|');
         /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
            有选中 → 只亮该组相关的，其余更淡。 */
-        var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? ctx.baseRad() : (lit ? 0.92 : 0.02));
+        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
+        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseRad() : (lit ? 0.92 : 0.02));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
-        var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? ctx.baseGlow() : (lit ? 0.40 : 0.01));
+        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
+        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseGlow() : (lit ? 0.40 : 0.01));
+      });
+      /* 环：选部时只亮该部那一个，其余压暗；没选部则都回基准 */
+      Array.prototype.forEach.call(ctx.svg.querySelectorAll('.tdn-ring'), function (r) {
+        var base = +(r.getAttribute('data-base') || 0.26);
+        if (!dsel) { r.setAttribute('stroke-opacity', base); r.setAttribute('stroke-width', 1.4); return; }
+        var mine = r.getAttribute('data-dept') === dsel;
+        r.setAttribute('stroke-opacity', mine ? 0.9 : 0.05);
+        r.setAttribute('stroke-width', mine ? 3 : 1.4);
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
-        var lit = on && (set[s[0]] || set[s[1]]);
-        /* 无选中 → 回到常态（细弦按自己的权重，且随鼠标是否在 D 环内变档）；
-           有选中 → 相关的弦提亮，其余压到几乎不见。 */
-        p.setAttribute('stroke-opacity', !on ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
+        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
+        /* 无选中（或选的是"部"）→ 回到常态，细弦按自己的权重；
+           选中某一组 → 相关的弦提亮，其余压到几乎不见。 */
+        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
       });
     }
 
@@ -719,7 +731,8 @@
         if (SEL.leg === btn) { setSel(null, DEF, null, null); return; }
         var ids = deptSel(d);
         setSel(ids,
-          '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>　共 ' + ids.length + ' 组：' + jumpHTML(ids),
+          '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>　共 ' + ids.length +
+          ' 组，皆由道派生（图上亮出这一环）：' + jumpHTML(ids),
           btn, null);
       };
     });
