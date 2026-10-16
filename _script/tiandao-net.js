@@ -224,9 +224,10 @@
     [gRing, gChord, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
     [gRing, gChord, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
 
-    order.forEach(function (d) {
+    order.forEach(function (d, di) {
       var R = RING[d], c = COLOR[d];
       gRing.appendChild(el('ellipse', {
+        class: 'tdn-ring tdn-ring-' + di,
         cx: 0, cy: 0, rx: R * AX, ry: R * AY, fill: 'none', stroke: c,
         'stroke-opacity': 0.26, 'stroke-width': 1.4, 'stroke-dasharray': '3 9'
       }));
@@ -342,7 +343,27 @@
       fill: '#dce8ff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle',
       'fill-opacity': .92, filter: 'url(#tdn-glow)'
     }));
+    /* 交互圈：只有它接收指针事件。装饰用的大光晕若可命中，
+       会盖住最内环的 A1 节点，真人点不到。 */
+    var hit = el('circle', { class: 'tdn-core-hit', cx: 0, cy: 0, r: 68, fill: 'transparent' });
+    var htitle = el('title');
+    htitle.textContent = '道生一，一生二，二生三，三生万物。\n周行而不殆。\n大曰逝，逝曰远，远曰反。';
+    hit.appendChild(htitle);
+    gc.appendChild(hit);
     gNode.appendChild(gc);
+
+    /* 悬停（或点击）中央：四环由内向外亮起，再返回——远曰反 */
+    var rippleTimer = null;
+    function rippleOn() { svg.classList.add('tdn-rippling'); }
+    function rippleOff() { svg.classList.remove('tdn-rippling'); }
+    hit.addEventListener('mouseenter', rippleOn);
+    hit.addEventListener('mouseleave', rippleOff);
+    /* 触屏无 hover：点一下放一整轮，随即自动撤下 */
+    hit.addEventListener('click', function () {
+      rippleOn();
+      clearTimeout(rippleTimer);
+      rippleTimer = setTimeout(rippleOff, 3600);
+    });
 
     var stage = document.createElement('div');
     stage.className = 'tdn-stage';

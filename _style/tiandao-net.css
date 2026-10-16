@@ -311,3 +311,31 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 @media (prefers-reduced-motion: reduce) {
   .tdn-node .tdn-corona, .tdn-node .tdn-spike, .tdn-node .tdn-hot { transition: none; }
 }
+
+/* ===== 涟漪：悬停中央「道」，四环由内向外亮起，再返回 =====
+   道生一，一生二，二生三，三生万物 —— 向外
+   大曰逝，逝曰远，远曰反       —— 折返
+   周行而不殆                   —— 悬停期间循环不息
+   装饰元素一律不接收指针事件，只有 .tdn-core-hit 可命中，
+   否则中央的大光晕会盖住最内环的 A1 节点。 */
+.tdn-core > * { pointer-events: none; }
+.tdn-core .tdn-core-hit { pointer-events: all; cursor: pointer; }
+
+@keyframes tdn-ripple {
+  0%   { stroke-opacity: .26; stroke-width: 1.4; }
+  5%   { stroke-opacity: 1;   stroke-width: 3.4; }
+  21%  { stroke-opacity: .26; stroke-width: 1.4; }
+  100% { stroke-opacity: .26; stroke-width: 1.4; }
+}
+.tdn-svg.tdn-rippling .tdn-ring {
+  animation: tdn-ripple 3.6s ease-in-out infinite, tdn-ripple 3.6s ease-in-out infinite;
+}
+.tdn-svg.tdn-rippling .tdn-ring-0 { animation-delay: 0s,    2.40s; }
+.tdn-svg.tdn-rippling .tdn-ring-1 { animation-delay: .28s,  2.12s; }
+.tdn-svg.tdn-rippling .tdn-ring-2 { animation-delay: .56s,  1.84s; }
+.tdn-svg.tdn-rippling .tdn-ring-3 { animation-delay: .84s,  1.56s; }
+/* 涟漪期间中央的细环略亮，作为反馈 */
+.tdn-svg.tdn-rippling .tdn-core circle:nth-child(5) { stroke-opacity: .62; }
+@media (prefers-reduced-motion: reduce) {
+  .tdn-svg.tdn-rippling .tdn-ring { animation: none; }
+}
