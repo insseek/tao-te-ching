@@ -45,17 +45,16 @@ Glosses are deliberately short — they point, they do not translate.
 |---|---|---|
 | **A1** 道生万物 | The Dao gives birth to all things | |
 | **B1** 道法自然 | The Dao follows what is so of itself | |
-| **B2** 无之以为用 | The usefulness of emptiness | |
-| **B3** 似或存 | Elusive, as if present | |
-| **B4** 道隐无名 | The Dao hides, unnamed | |
-| **B5** 玄德 | Mysterious virtue: gives life, does not possess | |
-| **B6** 玄同 | Mysterious sameness: inclusive, impartial | |
-| **B7** 柔弱胜刚强 | The soft overcomes the hard — rising from below | |
-| **B8** 满招损 | Fullness invites loss — falling from above | |
+| **B2** 道冲 | The usefulness of emptiness | |
+| **B3** 道隐无名 | Elusive, as if present | |
+| **B4** 玄德 | The Dao hides, unnamed | |
+| **B5** 玄同 | Mysterious virtue: gives life, does not possess | |
+| **B6** 弱者道之用 | Mysterious sameness: inclusive, impartial | |
+| **B7** 满招损 | The soft overcomes the hard — rising from below | |
 | **C1** 守道抱一 | Keeping to the Dao, embracing the One | |
 | **C2** 知常全生 | Knowing the constant, living out one's years | |
-| **C3** 知足知止 | Knowing contentment, knowing when to stop | |
-| **C4** 常善救人 | Always able to save people — no one discarded | |
+| **C3** 常善救人 | Knowing contentment, knowing when to stop | |
+| **C4** 知足知止 | Always able to save people — no one discarded | |
 | **C5** 不争之德  | The gain of not contending | |
 | **D1** 守道不失 | Holding the Dao without losing it | |
 | **D2** 无为而治 | Ruling by non-action: no busyness, few words | |
