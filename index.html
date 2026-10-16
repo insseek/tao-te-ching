@@ -73,6 +73,29 @@
         crossChapter: true,
         crossChapterText: true,
       },
+      plugins: [
+        /* 定位到指定标题（天道星图抽屉里的「在新编中阅读」用它跳到当前组）。
+           docsify 自带 ?id= 在本站不生效——它在异步渲染完成前就去查元素，
+           查不到便不滚动。改挂 doneEach：渲染完再滚。 */
+        function (hook) {
+          hook.doneEach(function () {
+            var m = /[?&]id=([^&]+)/.exec(location.hash);
+            if (!m) return;
+            var id = decodeURIComponent(m[1]);
+            /* 滚三次：字体、图片晚到会把内容撑开，只滚一次会跑偏
+               （实测一次不够，标题会落到视口上方 76px） */
+            var go = function () {
+              var el = document.getElementById(id);
+              if (!el) return;
+              el.scrollIntoView({ block: 'start' });
+              window.scrollBy(0, -18);   /* 留一点上边距 */
+            };
+            setTimeout(go, 30);
+            setTimeout(go, 260);
+            setTimeout(go, 720);
+          });
+        }
+      ],
     }
   </script>
   <!-- Docsify v5 -->

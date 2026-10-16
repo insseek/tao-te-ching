@@ -38,6 +38,13 @@
     var t = el('text', Object.assign({ x: x, y: y, 'font-family': '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif' }, attrs || {}));
     t.textContent = s; return t;
   }
+  /* docsify 的标题锚点规则：整串转小写、去掉全角空格「　」、半角空格转连字符。
+     例：### D2　无为而治：无事、希言  →  id="d2-无为而治：无事、希言"
+     这就是抽屉里「在新编中阅读」跳过去时用来定位的锚点。 */
+  function anchorOf(id, name) {
+    return (id + '-' + name).toLowerCase().replace(/\u3000/g, '').replace(/ /g, '-');
+  }
+
   /* 节点/提示显示组名时去掉（…）括注，短而清楚 */
   function dispName(s) { return String(s).replace(/（[^）]*）/g, '').trim(); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -510,7 +517,8 @@
         body.innerHTML =
           '<h4>原文 · 评说</h4>' + vh +
           relHTML +
-          '<a class="tdn-goto" href="index.html#/00">在《里探《道德经》新编》中阅读 →</a>';
+          '<a class="tdn-goto" href="index.html#/00?id=' + anchorOf(id, n.name) + '">' +
+            '在《里探《道德经》新编》中阅读 →</a>';
         Array.prototype.forEach.call(body.querySelectorAll('.tdn-jump'), function (b) {
           b.onclick = function () { open(b.getAttribute('data-id')); };
         });
