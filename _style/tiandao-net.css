@@ -339,3 +339,58 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 @media (prefers-reduced-motion: reduce) {
   .tdn-svg.tdn-rippling .tdn-ring { animation: none; }
 }
+
+/* ===== 原文浮文：悬停中央「道」，在其正下方淡入 =====
+   刻意不用浏览器原生 title（系统方框，与星空/大道不搭）。
+   无边框、无底色、衬线体、字距拉开；靠文字阴影在星野上保持可读。 */
+.tdn-verse {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, var(--tip-y, 64px));
+  width: max-content; max-width: 84%;
+  text-align: center; pointer-events: none;
+  font-family: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC", Georgia, serif;
+  font-size: 15px; line-height: 2.25; letter-spacing: .26em; text-indent: .26em;
+  color: #dbe7ff;
+  text-shadow: 0 0 6px rgba(3,6,15,.98), 0 0 18px rgba(3,6,15,.96), 0 0 44px rgba(3,6,15,.92);
+}
+/* 自「道」垂下的一根细线，把浮文与中心连起来 */
+.tdn-verse .rule {
+  display: block; width: 1px; height: 28px; margin: 0 auto 15px;
+  background: linear-gradient(180deg, rgba(207,224,255,0), rgba(207,224,255,.5));
+  opacity: 0; transition: opacity .7s ease;
+}
+.tdn-verse span {
+  display: block; white-space: nowrap;
+  opacity: 0; transform: translateY(7px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.tdn-verse.on .rule { opacity: 1; }
+.tdn-verse.on span { opacity: 1; transform: none; }
+.tdn-verse.on span:nth-of-type(1) { transition-delay: .10s; }
+.tdn-verse.on span:nth-of-type(2) { transition-delay: .28s; }
+.tdn-verse.on span:nth-of-type(3) { transition-delay: .46s; }
+@media (max-width: 780px) {
+  .tdn-verse { font-size: 13px; letter-spacing: .18em; text-indent: .18em; line-height: 2.05; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tdn-verse, .tdn-verse span, .tdn-verse .rule { transition: none; }
+}
+
+/* ===== 悬停中央「道」：让图安静下来 =====
+   浮文落在「道」正下方，那个位置正好压着 B 环节点的标签。
+   与其把浮文做成一个框，不如让万物退隐——这也正是「玄之又玄」的意思。 */
+.tdn-node text { transition: opacity .55s ease; }
+.tdn-svg.tdn-focus .tdn-node text { opacity: .16; }
+.tdn-svg.tdn-focus [data-chord] { stroke-opacity: .015; }
+.tdn-svg.tdn-focus [data-rad],
+.tdn-svg.tdn-focus [data-rad-glow] { stroke-opacity: .05; }
+.tdn-svg.tdn-focus .tdn-neb { opacity: .5; }
+.tdn-svg.tdn-focus .tdn-stars { opacity: .62; }
+/* 浮文本身再收一点，落进「渊」的边缘之内 */
+.tdn-svg.tdn-focus ~ .tdn-verse,
+.tdn-verse.on { letter-spacing: .24em; }
+
+/* 悬停「道」时，节点星也一并收紧（标签已淡，光晕若全亮仍会从字后透出） */
+.tdn-svg.tdn-focus .tdn-corona { opacity: calc(var(--star, 1) * .16); }
+.tdn-svg.tdn-focus .tdn-spike  { opacity: calc(var(--star, 1) * .10); }
+.tdn-svg.tdn-focus .tdn-hot    { opacity: .30; }

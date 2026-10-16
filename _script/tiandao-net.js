@@ -345,17 +345,23 @@
     }));
     /* 交互圈：只有它接收指针事件。装饰用的大光晕若可命中，
        会盖住最内环的 A1 节点，真人点不到。 */
-    var hit = el('circle', { class: 'tdn-core-hit', cx: 0, cy: 0, r: 68, fill: 'transparent' });
-    var htitle = el('title');
-    htitle.textContent = '道生一，一生二，二生三，三生万物。\n周行而不殆。\n大曰逝，逝曰远，远曰反。';
-    hit.appendChild(htitle);
+    var hit = el('circle', {
+      class: 'tdn-core-hit', cx: 0, cy: 0, r: 68, fill: 'transparent',
+      'aria-label': '道生一，一生二，二生三，三生万物'
+    });
     gc.appendChild(hit);
     gNode.appendChild(gc);
 
     /* 悬停（或点击）中央：四环由内向外亮起，再返回——远曰反 */
-    var rippleTimer = null;
-    function rippleOn() { svg.classList.add('tdn-rippling'); }
-    function rippleOff() { svg.classList.remove('tdn-rippling'); }
+    var rippleTimer = null, verseTimer = null;
+    function rippleOn() {
+      svg.classList.add('tdn-rippling');
+      svg.classList.add('tdn-focus');   /* 道一出现，万物退隐：让浮文有干净的地方 */
+    }
+    function rippleOff() {
+      svg.classList.remove('tdn-rippling');
+      svg.classList.remove('tdn-focus');
+    }
     hit.addEventListener('mouseenter', rippleOn);
     hit.addEventListener('mouseleave', rippleOff);
     /* 触屏无 hover：点一下放一整轮，随即自动撤下 */
@@ -368,6 +374,39 @@
     var stage = document.createElement('div');
     stage.className = 'tdn-stage';
     stage.appendChild(svg);
+
+    /* 原文浮文：悬停中央「道」时，在它正下方淡入。
+       不用浏览器原生 title —— 那是系统方框，与星空、大道不搭。 */
+    var verse = document.createElement('div');
+    verse.className = 'tdn-verse';
+    verse.innerHTML =
+      '<i class="rule"></i>' +
+      '<span>道生一，一生二，二生三，三生万物</span>' +
+      '<span>寂兮寥兮，独立不改，周行而不殆</span>' +
+      '<span>大曰逝，逝曰远，远曰反</span>';
+    stage.appendChild(verse);
+
+    /* 浮文落在「道」的正下方：按 SVG 实际缩放算出偏移 */
+    function placeVerse() {
+      var sc = Math.min(stage.clientWidth / W, stage.clientHeight / H) || 0;
+      verse.style.setProperty('--tip-y', Math.round(198 * sc) + 'px');
+    }
+    placeVerse();
+    window.addEventListener('resize', placeVerse);
+    /* 布局完成后再量一次：建 stage 时它尚未排版，clientWidth/Height 还是 0，
+       偏移会被算成 0，浮文就贴在中心而不是落在正下方。 */
+    if (window.ResizeObserver) new ResizeObserver(placeVerse).observe(stage);
+    requestAnimationFrame(placeVerse);
+    setTimeout(placeVerse, 120);
+
+    hit.addEventListener('mouseenter', function () { placeVerse(); verse.classList.add('on'); });
+    hit.addEventListener('mouseleave', function () { verse.classList.remove('on'); });
+    hit.addEventListener('click', function () {
+      placeVerse(); verse.classList.add('on');
+      clearTimeout(verseTimer);
+      verseTimer = setTimeout(function () { verse.classList.remove('on'); }, 3600);
+    });
+
     host.appendChild(stage);
     return { svg: svg, stage: stage, nodeEls: nodeEls, gChord: gChord, gRadial: gRadial, gPulse: gPulse };
   }
