@@ -394,3 +394,8 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 .tdn-svg.tdn-focus .tdn-corona { opacity: calc(var(--star, 1) * .16); }
 .tdn-svg.tdn-focus .tdn-spike  { opacity: calc(var(--star, 1) * .10); }
 .tdn-svg.tdn-focus .tdn-hot    { opacity: .30; }
+
+/* 选中 A1「道生万物」（点中央，或选中含 A1 的一组）时，中央亮一档 */
+.tdn-svg.tdn-core-on .tdn-core text { fill-opacity: 1; }
+.tdn-svg.tdn-core-on .tdn-core circle { stroke-opacity: .72; }
+.tdn-svg.tdn-core-on .tdn-core { filter: brightness(1.45); }

@@ -8,7 +8,8 @@
   var DATA = {"depts": [{"key": "一", "name": "道生万物论（宇宙起源）"}, {"key": "二", "name": "道的属性和规律（自然规律）"}, {"key": "三", "name": "修身成圣（尊道不争）"}, {"key": "四", "name": "治国取天下（尊道无为）"}], "nodes": [{"id": "A1", "name": "道生万物", "dept": "一", "chs": [1, 4, 6, 25, 40, 42, 51, 52], "n": 13}, {"id": "B1", "name": "道法自然", "dept": "二", "chs": [6, 7, 14, 16, 21, 25, 34, 37, 39, 40, 58], "n": 11}, {"id": "B2", "name": "道冲（中空虚无，似或存）", "dept": "二", "chs": [4, 5, 14, 21, 25, 45], "n": 6}, {"id": "B3", "name": "道隐无名（不彰显）", "dept": "二", "chs": [32, 41, 45, 67, 78], "n": 4}, {"id": "B4", "name": "玄德（生而不有，养而不为主，利而不害）", "dept": "二", "chs": [2, 8, 10, 21, 34, 41, 51, 81], "n": 8}, {"id": "B5", "name": "玄同（包容，无相）", "dept": "二", "chs": [5, 32, 56, 62, 79], "n": 6}, {"id": "B6", "name": "弱者道之用（由下向上）", "dept": "二", "chs": [2, 22, 26, 32, 36, 39, 40, 43, 45, 61, 64, 66, 73, 76, 78], "n": 20}, {"id": "B7", "name": "满招损（由上向下）", "dept": "二", "chs": [9, 12, 23, 24, 30, 42, 77], "n": 10}, {"id": "C1", "name": "守道抱一", "dept": "三", "chs": [10, 15, 20, 23, 33, 41, 52, 53, 54, 70], "n": 20}, {"id": "C2", "name": "知常全生", "dept": "三", "chs": [16, 33, 50, 52, 55, 56, 71, 72, 81], "n": 17}, {"id": "C3", "name": "常善救人", "dept": "三", "chs": [27, 49, 79], "n": 6}, {"id": "C4", "name": "知足知止", "dept": "三", "chs": [15, 24, 29, 32, 42, 44, 46, 47, 52, 53, 58, 77], "n": 14}, {"id": "C5", "name": "不争之德（柔弱胜刚强）", "dept": "三", "chs": [7, 11, 22, 27, 28, 63, 67, 68], "n": 15}, {"id": "D1", "name": "守道不失", "dept": "四", "chs": [25, 32, 59, 62], "n": 4}, {"id": "D2", "name": "无为而治（贵身，无事、希言）", "dept": "四", "chs": [2, 5, 10, 13, 17, 23, 29, 35, 37, 43, 48, 57, 58, 60, 64, 75], "n": 23}, {"id": "D3", "name": "不崇德尚贤", "dept": "四", "chs": [3, 18, 19, 38], "n": 8}, {"id": "D4", "name": "愚民", "dept": "四", "chs": [3, 12, 65], "n": 5}, {"id": "D5", "name": "小国寡民", "dept": "四", "chs": [80], "n": 1}, {"id": "D6", "name": "谦下之德（柔弱胜刚强）", "dept": "四", "chs": [26, 36, 39, 42, 61, 66, 78], "n": 10}, {"id": "D7", "name": "不用威滥杀", "dept": "四", "chs": [72, 74], "n": 3}, {"id": "D8", "name": "不以兵强天下（不得已而用）", "dept": "四", "chs": [30, 31, 46, 69], "n": 8}], "radial": [["A1", "C1"], ["A1", "D1"], ["B1", "C1"], ["B1", "D1"], ["B1", "D2"], ["B2", "C5"], ["B2", "D2"], ["B3", "C1"], ["B3", "C5"], ["B3", "D3"], ["B4", "C2"], ["B4", "C3"], ["B4", "D2"], ["B4", "D7"], ["B4", "D8"], ["B5", "C1"], ["B5", "C2"], ["B5", "C3"], ["B6", "C2"], ["B6", "D6"], ["B6", "D8"], ["B7", "C4"], ["B7", "D4"], ["B7", "D5"], ["B7", "D6"], ["B7", "D7"], ["B7", "D8"]], "chord": [{"a": "B6", "b": "D6", "w": 6, "chs": [26, 36, 39, 61, 66, 78]}, {"a": "A1", "b": "B1", "w": 3, "chs": [6, 25, 40]}, {"a": "B1", "b": "B2", "w": 3, "chs": [14, 21, 25]}, {"a": "B3", "b": "B6", "w": 3, "chs": [32, 45, 78]}, {"a": "B6", "b": "D2", "w": 3, "chs": [2, 43, 64]}, {"a": "B7", "b": "C4", "w": 3, "chs": [24, 42, 77]}, {"a": "C1", "b": "C4", "w": 3, "chs": [15, 52, 53]}, {"a": "A1", "b": "B2", "w": 2, "chs": [4, 25]}, {"a": "A1", "b": "C4", "w": 2, "chs": [42, 52]}, {"a": "B1", "b": "B4", "w": 2, "chs": [21, 34]}, {"a": "B1", "b": "B6", "w": 2, "chs": [39, 40]}, {"a": "B1", "b": "D2", "w": 2, "chs": [37, 58]}, {"a": "B4", "b": "C1", "w": 2, "chs": [10, 41]}, {"a": "B4", "b": "D2", "w": 2, "chs": [2, 10]}, {"a": "B5", "b": "D1", "w": 2, "chs": [32, 62]}, {"a": "C1", "b": "C2", "w": 2, "chs": [33, 52]}, {"a": "C1", "b": "D2", "w": 2, "chs": [10, 23]}, {"a": "C4", "b": "D2", "w": 2, "chs": [29, 58]}], "core": {}};
 
   var COLOR = { '一': '#f6c453', '二': '#38bdf8', '三': '#34d399', '四': '#a78bfa' };
-  var RING  = { '一': 178, '二': 318, '三': 458, '四': 598 };
+  /* 三环：A1「道生万物」即中央的「道」，不另设环 */
+  var RING  = { '二': 318, '三': 458, '四': 598 };
   var NUM   = { '一': '一', '二': '二', '三': '三', '四': '四' };
   var SEQ   = { '一': '道生一', '二': '一生二', '三': '二生三', '四': '三生万物' };
   var SHORT = { '一': '道生万物论', '二': '道的属性和规律', '三': '修身成圣', '四': '治国取天下' };
@@ -97,7 +98,8 @@
   }
 
   function build(host) {
-    var order = ['一', '二', '三', '四'], groups = {};
+    var API = null;   /* 结尾赋值为返回对象，中央点击时用它取回调 */
+    var order = ['二', '三', '四'], groups = {};
     order.forEach(function (d) { groups[d] = DATA.nodes.filter(function (n) { return n.dept === d; }); });
 
     var pos = {};
@@ -108,6 +110,11 @@
         pos[n.id] = { x: Math.cos(a) * R * AX, y: Math.sin(a) * R * AY, a: a, r: 11 + Math.sqrt(n.n) * 3.4 };
       });
     });
+
+    /* A1「道生万物」＝中央的「道」。给它原点坐标，不渲染成节点；
+       这样 DATA.radial 里 A1 出发的两条、DATA.chord 里涉及 A1 的三条，
+       都会自动从中央射出／牵出，无需另写分支。 */
+    pos['A1'] = { x: 0, y: 0, a: 0, r: 56 };
 
     var W = 2760, H = 1300;
     var svg = el('svg', {
@@ -298,6 +305,7 @@
 
     var nodeEls = {};
     DATA.nodes.forEach(function (n) {
+      if (n.id === 'A1') return;          /* A1 是中央的「道」，不画成节点 */
       var p = pos[n.id], c = COLOR[n.dept], r = p.r;
       var g = el('g', { class: 'tdn-node', 'data-id': n.id, style: 'cursor:pointer' });
       /* 0.42 是"暗星"的下限，1.0 是连接度最高的那一颗 */
@@ -358,6 +366,11 @@
       fill: '#dce8ff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle',
       'fill-opacity': .92, filter: 'url(#tdn-glow)'
     }));
+    /* 中央即 A1「道生万物」——把组名写在道上，点它读该组原文 */
+    gc.appendChild(tx(0, 62, '道生万物', {
+      fill: '#a9c2ee', 'font-size': 21, 'font-weight': 600, 'text-anchor': 'middle',
+      'fill-opacity': .62, 'letter-spacing': 2
+    }));
     /* 交互圈：只有它接收指针事件。装饰用的大光晕若可命中，
        会盖住最内环的 A1 节点，真人点不到。 */
     var hit = el('circle', {
@@ -381,9 +394,11 @@
     hit.addEventListener('mouseleave', rippleOff);
     /* 触屏无 hover：点一下放一整轮，随即自动撤下 */
     hit.addEventListener('click', function () {
+      /* 丙案：悬停＝涟漪＋三段原文浮文；点击＝读 A1「道生万物」的原文与评说 */
       rippleOn();
       clearTimeout(rippleTimer);
       rippleTimer = setTimeout(rippleOff, 3600);
+      if (API && API.onCoreClick) API.onCoreClick('A1');
     });
 
     var stage = document.createElement('div');
@@ -423,13 +438,21 @@
     });
 
     host.appendChild(stage);
-    return { svg: svg, stage: stage, nodeEls: nodeEls, gChord: gChord, gRadial: gRadial, gPulse: gPulse };
+    /* onCoreClick 由 mount 挂上——抽屉的 open() 定义在 mount 里，
+       build 取不到它，只能留一个回调口子。 */
+    API = {
+      svg: svg, stage: stage, nodeEls: nodeEls,
+      gChord: gChord, gRadial: gRadial, gPulse: gPulse,
+      onCoreClick: null
+    };
+    return API;
   }
 
   function mount(host) {
     var content = host.closest ? host.closest('.content') : null;
     if (content) content.classList.add('tdn-wide');
     var ctx = build(host);
+    ctx.onCoreClick = open;   /* 点中央「道」→ 读 A1「道生万物」 */
 
     /* ---------- 抽屉 ---------- */
     var drawer = document.createElement('div');
@@ -531,6 +554,12 @@
       var on = Object.keys(set).length > 0;
       DATA.nodes.forEach(function (n) {
         var g = ctx.nodeEls[n.id];
+        /* A1「道生万物」没有节点元素——它就是中央的「道」。
+           选中 A1 时让中央亮一档，而不是去碰不存在的节点。 */
+        if (!g) {
+          if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && set['A1']));
+          return;
+        }
         g.style.opacity = (!on || set[n.id]) ? 1 : 0.12;
         /* 触屏没有 hover：选中的那颗要保持全亮，否则一直是暗星 */
         g.classList.toggle('tdn-on', !!(on && set[n.id]));
@@ -573,7 +602,7 @@
     var legend = document.createElement('div');
     legend.className = 'tdn-legend';
     legend.innerHTML = '<span class="tdn-title">天网恢恢，疏而不失</span>' +
-      ['一', '二', '三', '四'].map(function (d) {
+      ['二', '三', '四'].map(function (d) {
         return '<button class="tdn-leg" data-dept="' + d + '" style="--c:' + COLOR[d] + '">' +
           '<b>' + d + '</b>' + SHORT[d] + '<i>' + DATA.nodes.filter(function (n) { return n.dept === d; }).length + ' 组</i></button>';
       }).join('');
