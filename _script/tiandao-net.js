@@ -138,6 +138,19 @@
           '<stop offset="55%" stop-color="' + n[0] + '" stop-opacity="' + (n[1] * .34).toFixed(3) + '"/>' +
           '<stop offset="100%" stop-color="' + n[0] + '" stop-opacity="0"/></radialGradient>');
       });
+    /* 中央用：深渊（压暗）与极细光圈。
+       「渊兮，似万物之宗」「湛兮，似或存」——道是深、暗、静的，
+       不能做成一团白光，那成灯泡了。 */
+    DEFS.push('<radialGradient id="tdn-abyss">' +
+      '<stop offset="0%" stop-color="#01030a" stop-opacity=".94"/>' +
+      '<stop offset="55%" stop-color="#020617" stop-opacity=".58"/>' +
+      '<stop offset="100%" stop-color="#020617" stop-opacity="0"/></radialGradient>');
+    DEFS.push('<radialGradient id="tdn-rim">' +
+      '<stop offset="0%" stop-color="#8fb4ff" stop-opacity="0"/>' +
+      '<stop offset="60%" stop-color="#8fb4ff" stop-opacity="0"/>' +
+      '<stop offset="79%" stop-color="#cfe0ff" stop-opacity=".075"/>' +
+      '<stop offset="90%" stop-color="#cfe0ff" stop-opacity=".022"/>' +
+      '<stop offset="100%" stop-color="#8fb4ff" stop-opacity="0"/></radialGradient>');
     DEFS.push('<filter id="tdn-glow" x="-90%" y="-90%" width="280%" height="280%">',
       '<feGaussianBlur stdDeviation="7" result="b"/><feMerge>',
       '<feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>');
@@ -292,27 +305,30 @@
     });
 
     var gc = el('g', { class: 'tdn-core' });
-    /* 外层大光晕（辐射宇宙的观感主要来自这一层） */
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 300, fill: 'url(#tdn-halo)', opacity: .85 }));
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 170, fill: 'url(#tdn-halo)', opacity: .95 }));
-    /* 光芒：长短相间，缓慢自转 */
+    /* 一圈极淡的界面之光——不是光晕，是"深潭的边缘" */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 210, fill: 'url(#tdn-rim)' }));
+    /* 压暗中央：道是渊，不是光源 */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 162, fill: 'url(#tdn-abyss)' }));
+    /* 光芒：细、长、极淡，明灭都收敛 */
     var rays = el('g', { class: 'tdn-rays' });
-    for (var ri = 0; ri < 16; ri++) {
-      var ra = ri * Math.PI / 8, inner = 82, outer = (ri % 2 ? 168 : 258);
+    for (var ri = 0; ri < 12; ri++) {
+      var ra = ri * Math.PI / 6, inner = 88, outer = (ri % 2 ? 190 : 292);
       rays.appendChild(el('line', {
         x1: (Math.cos(ra) * inner).toFixed(1), y1: (Math.sin(ra) * inner).toFixed(1),
         x2: (Math.cos(ra) * outer).toFixed(1), y2: (Math.sin(ra) * outer).toFixed(1),
-        stroke: '#cfe0ff', 'stroke-opacity': (ri % 2 ? 0.06 : 0.14),
-        'stroke-width': (ri % 2 ? 1.2 : 1.9), 'stroke-linecap': 'round'
+        stroke: '#a9c2ee', 'stroke-opacity': (ri % 2 ? 0.045 : 0.095),
+        'stroke-width': (ri % 2 ? 0.9 : 1.4), 'stroke-linecap': 'round'
       }));
     }
     gc.appendChild(rays);
-    /* 环与核心 */
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 74, fill: 'none', stroke: '#eaf1ff', 'stroke-opacity': .30, 'stroke-width': 1.4, 'stroke-dasharray': '2 7' }));
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#f8fafc', 'stroke-opacity': .52, 'stroke-width': 1.6 }));
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 50, fill: 'url(#tdn-halo)' }));
+    /* 环：外虚内实，细而清 */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 78, fill: 'none', stroke: '#a9c2ee', 'stroke-opacity': .14, 'stroke-width': 1, 'stroke-dasharray': '1.5 9' }));
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#dbe7ff', 'stroke-opacity': .34, 'stroke-width': 1.4 }));
+    /* 核心只留一点微光：「似或存」 */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: 'url(#tdn-halo)', opacity: .30 }));
     gc.appendChild(tx(0, 16, '道', {
-      fill: '#ffffff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
+      fill: '#dce8ff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle',
+      'fill-opacity': .92, filter: 'url(#tdn-glow)'
     }));
     gNode.appendChild(gc);
 
