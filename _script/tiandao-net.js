@@ -585,12 +585,16 @@
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad]'), function (p) {
         var a = p.getAttribute('data-rad'); if (!a) return;
         var s = a.split('|');
-        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.92 : 0.05);
+        /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
+           有选中 → 只亮该组相关的，其余更淡。 */
+        var lit = on && (set[s[0]] || set[s[1]]);
+        p.setAttribute('stroke-opacity', !on ? 0.09 : (lit ? 0.92 : 0.02));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
-        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.40 : 0.03);
+        var lit = on && (set[s[0]] || set[s[1]]);
+        p.setAttribute('stroke-opacity', !on ? 0.035 : (lit ? 0.40 : 0.01));
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
