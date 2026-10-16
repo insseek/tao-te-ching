@@ -389,7 +389,7 @@
     /* 浮文落在「道」的正下方：按 SVG 实际缩放算出偏移 */
     function placeVerse() {
       var sc = Math.min(stage.clientWidth / W, stage.clientHeight / H) || 0;
-      verse.style.setProperty('--tip-y', Math.round(198 * sc) + 'px');
+      verse.style.setProperty('--tip-y', Math.round(78 * sc) + 'px');
     }
     placeVerse();
     window.addEventListener('resize', placeVerse);

@@ -355,7 +355,7 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 }
 /* 自「道」垂下的一根细线，把浮文与中心连起来 */
 .tdn-verse .rule {
-  display: block; width: 1px; height: 28px; margin: 0 auto 15px;
+  display: block; width: 1px; height: 18px; margin: 0 auto 12px;
   background: linear-gradient(180deg, rgba(207,224,255,0), rgba(207,224,255,.5));
   opacity: 0; transition: opacity .7s ease;
 }
