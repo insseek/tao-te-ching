@@ -276,14 +276,14 @@
       var cx = mx + (-dy / len) * 30, cy = my + (dx / len) * 30, id = 'tdn-rad-' + i;
       var path = el('path', {
         id: id, d: 'M' + p.x + ',' + p.y + ' Q' + cx + ',' + cy + ' ' + q.x + ',' + q.y,
-        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.5,
-        'stroke-width': 1.9, 'data-rad': pair[0] + '|' + pair[1]
+        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.22,
+        'stroke-width': 1.6, 'data-rad': pair[0] + '|' + pair[1]
       });
       var t = el('title'); t.textContent = pair[0] + ' → ' + pair[1]; path.appendChild(t);
       /* 底层柔光：同一条路径画粗、低透明度，做出光流质感（比模糊滤镜便宜） */
       gRadial.appendChild(el('path', {
         d: path.getAttribute('d'), fill: 'none', stroke: COLOR[byId[pair[0]].dept],
-        'stroke-opacity': 0.13, 'stroke-width': 7, 'stroke-linecap': 'round',
+        'stroke-opacity': 0.07, 'stroke-width': 6, 'stroke-linecap': 'round',
         'data-rad-glow': pair[0] + '|' + pair[1]
       }));
       gRadial.appendChild(path);
@@ -362,14 +362,17 @@
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#dbe7ff', 'stroke-opacity': .34, 'stroke-width': 1.4 }));
     /* 核心只留一点微光：「似或存」 */
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: 'url(#tdn-halo)', opacity: .30 }));
-    gc.appendChild(tx(0, 16, '道', {
-      fill: '#dce8ff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle',
-      'fill-opacity': .92, filter: 'url(#tdn-glow)'
+    /* 中央两个字是全场焦点，做大做亮：渊是暗的，字必须跳出来 */
+    gc.appendChild(tx(0, 18, '道', {
+      fill: '#ffffff', 'font-size': 76, 'font-weight': 700, 'text-anchor': 'middle',
+      'fill-opacity': 1, filter: 'url(#tdn-glow)',
+      style: 'paint-order:stroke;stroke:#04060f;stroke-width:3'
     }));
     /* 中央即 A1「道生万物」——把组名写在道上，点它读该组原文 */
-    gc.appendChild(tx(0, 62, '道生万物', {
-      fill: '#a9c2ee', 'font-size': 21, 'font-weight': 600, 'text-anchor': 'middle',
-      'fill-opacity': .62, 'letter-spacing': 2
+    gc.appendChild(tx(0, 74, '道生万物', {
+      fill: '#cfe0ff', 'font-size': 27, 'font-weight': 700, 'text-anchor': 'middle',
+      'fill-opacity': .95, 'letter-spacing': 3,
+      style: 'paint-order:stroke;stroke:#04060f;stroke-width:3'
     }));
     /* 交互圈：只有它接收指针事件。装饰用的大光晕若可命中，
        会盖住最内环的 A1 节点，真人点不到。 */
@@ -569,12 +572,12 @@
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad]'), function (p) {
         var a = p.getAttribute('data-rad'); if (!a) return;
         var s = a.split('|');
-        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.8 : 0.04);
+        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.92 : 0.05);
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
-        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.30 : 0.02);
+        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.40 : 0.03);
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
@@ -582,21 +585,9 @@
       });
     }
 
-    /* ---------- 核心词 ---------- */
-    var bar = document.createElement('div');
-    bar.className = 'tdn-chips';
-    var all = document.createElement('button');
-    all.className = 'tdn-chip tdn-all on'; all.textContent = '↺ 全网';
-    all.title = '复位：看全网（也可点图面空白处或按 Esc）';
-    bar.appendChild(all);
-    var words = Object.keys(DATA.core);
-    words.forEach(function (w) {
-      var b = document.createElement('button');
-      b.className = 'tdn-chip'; b.textContent = w; bar.appendChild(b);
-    });
     var readout = document.createElement('div');
     readout.className = 'tdn-readout';
-    var DEF = '点任一组，读它的原文、评说与牵连；点上方核心词或部名可点亮一片；点图面空白、按 Esc 或点「↺ 全网」回到全网。';
+    var DEF = '点任一组，读它的原文、评说与牵连；点上方部名可点亮一部；点图面空白或按 Esc 回到全网。';
     readout.innerHTML = DEF;
 
     var legend = document.createElement('div');
@@ -604,7 +595,7 @@
     legend.innerHTML = '<span class="tdn-title">天网恢恢，疏而不失</span>' +
       ['二', '三', '四'].map(function (d) {
         return '<button class="tdn-leg" data-dept="' + d + '" style="--c:' + COLOR[d] + '">' +
-          '<b>' + d + '</b>' + SHORT[d] + '<i>' + DATA.nodes.filter(function (n) { return n.dept === d; }).length + ' 组</i></button>';
+          SHORT[d] + '<i>' + DATA.nodes.filter(function (n) { return n.dept === d; }).length + ' 组</i></button>';
       }).join('');
 
     /* ---------- 选中态（持久）vs 悬停预览（临时）----------
@@ -630,10 +621,6 @@
       Array.prototype.forEach.call(legend.querySelectorAll('.tdn-leg'), function (x) {
         x.classList.toggle('on', x === SEL.leg);
       });
-      Array.prototype.forEach.call(bar.children, function (x) {
-        if (x === all) x.classList.toggle('on', !SEL.chip && !SEL.leg);
-        else x.classList.toggle('on', x === SEL.chip);
-      });
       wireJumps(readout);
     }
     function setSel(ids, html, leg, chip) {
@@ -647,7 +634,6 @@
 
     /* 全网（复位） */
     function resetAll() { close(); setSel(null, DEF, null, null); }
-    all.onclick = resetAll;
     escReset = resetAll;
 
     /* 点图面空白 → 复位 */
@@ -669,17 +655,6 @@
       };
     });
 
-    /* 核心词 */
-    words.forEach(function (w, k) {
-      bar.children[k + 1].onclick = function () {
-        close();
-        var ids = DATA.core[w];
-        setSel(ids, '<b style="color:#dbe7ff">「' + w + '」</b> 落在 ' + ids.length + ' 组：' + jumpHTML(ids),
-          null, bar.children[k + 1]);
-      };
-    });
-
-    host.insertBefore(bar, ctx.stage);
     host.insertBefore(legend, ctx.stage);
     host.insertBefore(readout, ctx.stage);
 
