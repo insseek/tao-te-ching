@@ -453,6 +453,43 @@
       verseTimer = setTimeout(function () { verse.classList.remove('on'); }, 3600);
     });
 
+    /* ---------- 图面悬停：进到 D 环之内，整张网提到中间态 ----------
+       常态只是"若有若无"，全貌要看不清；但一进来就全亮又太吵。
+       故取中间值：能看出网的走向，又不夺节点与中央。
+       已有选中（tdn-sel）时让路——那时的亮暗由选中态决定。 */
+    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_CHORD = 0.45;
+    var hoverOn = false;
+    function hoverWeb(level) {
+      if (svg.classList.contains('tdn-sel')) return;
+      Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad]'), function (p) {
+        p.setAttribute('stroke-opacity', level ? HOVER_LINE : 0.18);
+      });
+      Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
+        p.setAttribute('stroke-opacity', level ? HOVER_GLOW : 0.07);
+      });
+      Array.prototype.forEach.call(gChord.querySelectorAll('path'), function (p) {
+        var b = +(p.getAttribute('data-base') || 0.1);
+        p.setAttribute('stroke-opacity', level ? Math.min(b * 1.9, HOVER_CHORD) : b);
+      });
+    }
+    /* D 环是椭圆（rx = R×AX，ry = R×AY），按椭圆方程判"圈内" */
+    var D_RX = RING['四'] * AX, D_RY = RING['四'] * AY;
+    function inD(e) {
+      var r = svg.getBoundingClientRect();
+      var sc = Math.min(r.width / W, r.height / H) || 1;
+      var x = (e.clientX - (r.left + r.width / 2)) / sc;
+      var y = (e.clientY - (r.top + r.height / 2)) / sc;
+      return (x * x) / (D_RX * D_RX) + (y * y) / (D_RY * D_RY) <= 1;
+    }
+    stage.addEventListener('mousemove', function (e) {
+      var inside = inD(e);
+      if (inside === hoverOn) return;
+      hoverOn = inside; hoverWeb(inside);
+    });
+    stage.addEventListener('mouseleave', function () {
+      if (hoverOn) { hoverOn = false; hoverWeb(false); }
+    });
+
     host.appendChild(stage);
     /* onCoreClick 由 mount 挂上——抽屉的 open() 定义在 mount 里，
        build 取不到它，只能留一个回调口子。 */
@@ -568,6 +605,7 @@
     function highlight(ids) {
       var set = {}; (ids || []).forEach(function (i) { set[i] = 1; });
       var on = Object.keys(set).length > 0;
+      ctx.svg.classList.toggle('tdn-sel', on);   /* 有选中时，图面悬停不再提亮全网 */
       DATA.nodes.forEach(function (n) {
         var g = ctx.nodeEls[n.id];
         /* A1「道生万物」没有节点元素——它就是中央的「道」。
