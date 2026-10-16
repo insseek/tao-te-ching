@@ -621,6 +621,15 @@
       /* 选的是"部"而不是某一组时：这一部的含义是"皆由道派生"，
          故不点亮任何连线，只把该部的圆环与中央「道」亮出来。 */
       var dsel = (SEL && SEL.leg) ? SEL.leg.getAttribute('data-dept') : null;
+      /* 选部时，除该部本身，还要把它的"道源"一并显出来（但压暗一档）。
+         依据就是 DATA.radial（源→用）：凡 u → v 且 v 属于该部，则 u 是它的源。
+         二部的源只有道（A1），已由中央承担，故二部自然没有额外的上游节点。 */
+      var up = {};
+      if (dsel) {
+        DATA.radial.forEach(function (pair) {
+          if (set[pair[1]] && !set[pair[0]]) up[pair[0]] = 1;
+        });
+      }
       DATA.nodes.forEach(function (n) {
         var g = ctx.nodeEls[n.id];
         /* A1「道生万物」没有节点元素——它就是中央的「道」。
@@ -629,7 +638,7 @@
           if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && (set['A1'] || dsel)));
           return;
         }
-        g.style.opacity = (!on || set[n.id]) ? 1 : 0.12;
+        g.style.opacity = (!on || set[n.id]) ? 1 : (up[n.id] ? 0.62 : 0.12);
         /* 触屏没有 hover：选中的那颗要保持全亮，否则一直是暗星 */
         g.classList.toggle('tdn-on', !!(on && set[n.id]));
       });
@@ -641,13 +650,17 @@
         /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
            有选中 → 只亮该组相关的，其余更淡。 */
         var lit = on && !dsel && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseRad() : (lit ? 0.92 : 0.02));
+        var upEdge = dsel && set[s[1]] && !set[s[0]];      /* 指向该部的源→用 */
+        p.setAttribute('stroke-opacity',
+          !on ? ctx.baseRad() : (dsel ? (upEdge ? 0.45 : ctx.baseRad()) : (lit ? 0.92 : 0.02)));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
         var lit = on && !dsel && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseGlow() : (lit ? 0.40 : 0.01));
+        var upEdge = dsel && set[s[1]] && !set[s[0]];
+        p.setAttribute('stroke-opacity',
+          !on ? ctx.baseGlow() : (dsel ? (upEdge ? 0.18 : ctx.baseGlow()) : (lit ? 0.40 : 0.01)));
       });
       /* 环：选部时只亮该部那一个，其余压暗；没选部则都回基准 */
       Array.prototype.forEach.call(ctx.svg.querySelectorAll('.tdn-ring'), function (r) {
@@ -732,7 +745,8 @@
         var ids = deptSel(d);
         setSel(ids,
           '<b style="color:' + COLOR[d] + '">' + d + '部　' + SHORT[d] + '</b>　共 ' + ids.length +
-          ' 组，皆由道派生（图上亮出这一环）：' + jumpHTML(ids),
+          ' 组，皆由道派生（图上亮出这一环' +
+          (d === '二' ? '' : '，一并显出它们的道源') + '）：' + jumpHTML(ids),
           btn, null);
       };
     });
