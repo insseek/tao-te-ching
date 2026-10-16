@@ -52,6 +52,7 @@ def parse_00():
     depts = []          # [(部名, [组号…]), …]
     names, dept_of, chs, n, ps, src = {}, {}, {}, {}, {}, {}
     order, cur, curdept = [], None, None
+    warn = []
     for l in lines:
         m = re.match(r'^## (.+)$', l)
         if m:
@@ -59,10 +60,15 @@ def parse_00():
             depts.append((curdept, []))
             cur = None
             continue
-        m = re.match(r'^### ([A-D]\d+)　(.+)$', l)
+        # 组标题：分隔符规范是全角空格「　」，但也容忍半角空格（并报警）。
+        # 曾因只认全角，把 `### C6 无之以为用（…）` 整组静默丢掉。
+        m = re.match(r'^### ([A-D]\d+)([　\s]+)(.+)$', l)
         if m:
             cur = m.group(1)
-            names[cur] = m.group(2).strip()
+            if m.group(2) != '\u3000':
+                warn.append('组标题分隔符不是全角空格：%s（当前用 %r）'
+                            % (cur, m.group(2)))
+            names[cur] = m.group(3).strip()
             dept_of[cur] = curdept
             chs[cur], n[cur], ps[cur] = set(), 0, []
             order.append(cur)
@@ -86,7 +92,7 @@ def parse_00():
                 src[cur] = re.findall(r'([A-D]\d+)', m2.group(1))
     depts = [(d, gs) for d, gs in depts if gs]
     return dict(depts=depts, names=names, dept_of=dept_of, chs=chs,
-                n=n, ps=ps, src=src, order=order)
+                n=n, ps=ps, src=src, order=order, warn=warn)
 
 
 def short(name):
@@ -259,22 +265,51 @@ def sync_net(D, V):
 
 # ---------------------------------------------------------------- en.md
 def sync_en(D):
+    """整表重建英文导览的组表。
+
+    中文名列取自 00.md；英文释义是人工写的，固化在 EN_GLOSS 里。
+    两张表必须**同时重写**——早先只改中文列，结果 B 组编号一变，
+    释义就整体错行（B3 道隐无名配上了「似或存」的释义）。
+    """
     p = ROOT / 'en.md'
     e = p.read_text(encoding='utf-8')
-    for g in re.findall(r'\*\*([A-D]\d)\*\*', e):
-        if g not in D['names']:
-            e = re.sub(r'^\|[^\n]*\*\*' + g + r'\*\*[^\n]*\n', '', e, flags=re.M)
-    for g in D['order']:
-        m = re.search(r'\*\*' + g + r'\*\* ([^|]+)\|', e)
-        if m and m.group(1).strip() != short(D['names'][g]):
-            e = e.replace(m.group(0), m.group(0).replace(m.group(1).strip(),
-                                                          short(D['names'][g])), 1)
+    order = D['order']
+    rows = []
+    for g in order:
+        rows.append('| **%s** %s | %s | |' % (g, short(D['names'][g]), EN_GLOSS.get(g, '')))
+    e = replace_table(e, r'\| \| \| \|\n\|[-|]+\|\n', rows)
+    e = re.sub(r'^## The \d+ groups$', '## The %d groups' % len(order), e, flags=re.M)
     if not CHECK:
         p.write_text(e, encoding='utf-8')
     return e
 
 
 # 旧简称 → 现简称（88.md 散文里可能残留）
+EN_GLOSS = {
+    'A1': 'The Dao gives birth to all things',
+    'B1': 'The Dao follows what is so of itself',
+    'B2': 'The usefulness of emptiness — elusive, as if present',
+    'B3': 'The Dao hides, unnamed',
+    'B4': 'Mysterious virtue: gives life, does not possess',
+    'B5': 'Mysterious sameness: inclusive, impartial',
+    'B6': 'The soft overcomes the hard — rising from below',
+    'B7': 'Fullness invites loss — falling from above',
+    'C1': 'Keeping to the Dao, embracing the One',
+    'C2': "Knowing the constant, living out one's years",
+    'C3': 'Always able to save people — no one discarded',
+    'C4': 'Knowing contentment, knowing when to stop',
+    'C5': 'The virtue of not contending',
+    'C6': 'The usefulness of emptiness',
+    'D1': 'Holding the Dao without losing it',
+    'D2': 'Ruling by non-action: no busyness, few words',
+    'D3': 'Not exalting virtue or worthies',
+    'D4': 'Keeping the people simple',
+    'D5': 'A small state with few people',
+    'D6': 'The virtue of humility — the soft overcoming the hard',
+    'D7': 'Not killing wantonly, not ruling by fear',
+    'D8': 'Not forcing the world by arms',
+}
+
 SENTENCES = [
     '天下有始，以为天下母。',
     '人法地，地法天，天法道，道法自然。',
@@ -324,6 +359,8 @@ def main():
     print('00.md：%d 组｜引文行 %d｜道源正行 %d 组 → 源→用 %d 条｜共章弦 %d 条｜≥3 组的章 %d 个'
           % (len(D['order']), sum(D['n'].values()), len(D['src']),
              len(V['edges']), len(V['chords']), len(V['multi'])))
+    for w in D.get('warn', []):
+        print('  ⚠️  ' + w)
     sync_88(D, V)
     sync_net(D, V)
     sync_en(D)
