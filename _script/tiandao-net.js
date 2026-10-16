@@ -276,14 +276,14 @@
       var cx = mx + (-dy / len) * 30, cy = my + (dx / len) * 30, id = 'tdn-rad-' + i;
       var path = el('path', {
         id: id, d: 'M' + p.x + ',' + p.y + ' Q' + cx + ',' + cy + ' ' + q.x + ',' + q.y,
-        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.09,
+        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.18,
         'stroke-width': 1.5, 'data-rad': pair[0] + '|' + pair[1]
       });
       var t = el('title'); t.textContent = pair[0] + ' → ' + pair[1]; path.appendChild(t);
       /* 底层柔光：同一条路径画粗、低透明度，做出光流质感（比模糊滤镜便宜） */
       gRadial.appendChild(el('path', {
         d: path.getAttribute('d'), fill: 'none', stroke: COLOR[byId[pair[0]].dept],
-        'stroke-opacity': 0.035, 'stroke-width': 5, 'stroke-linecap': 'round',
+        'stroke-opacity': 0.07, 'stroke-width': 5, 'stroke-linecap': 'round',
         'data-rad-glow': pair[0] + '|' + pair[1]
       }));
       gRadial.appendChild(path);
@@ -588,17 +588,20 @@
         /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
            有选中 → 只亮该组相关的，其余更淡。 */
         var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? 0.09 : (lit ? 0.92 : 0.02));
+        p.setAttribute('stroke-opacity', !on ? 0.18 : (lit ? 0.92 : 0.02));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
         var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? 0.035 : (lit ? 0.40 : 0.01));
+        p.setAttribute('stroke-opacity', !on ? 0.07 : (lit ? 0.40 : 0.01));
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
-        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? Math.min(b * 2.2, 0.75) : 0.012);
+        var lit = on && (set[s[0]] || set[s[1]]);
+        /* 无选中 → 回到它自己的淡底 b（与属性里的默认值一致）；
+           有选中 → 相关的弦提亮，其余压到几乎不见。 */
+        p.setAttribute('stroke-opacity', !on ? b : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
       });
     }
 
