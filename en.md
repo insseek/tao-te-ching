@@ -59,7 +59,7 @@ Glosses are deliberately short — they point, they do not translate.
 | **C5** 不争之得 | The gain of not contending | |
 | **D1** 守道不失 | Holding the Dao without losing it | |
 | **D2** 无为而治 | Ruling by non-action: no busyness, few words | |
-| **D3** 不崇德、不尚贤 | Not exalting virtue or worthies | |
+| **D3** 不崇德尚贤 | Not exalting virtue or worthies | |
 | **D4** 愚民 | Keeping the people simple | |
 | **D5** 小国寡民 | A small state with few people | |
 | **D6** 谦下之得 | The gain of humility — the soft overcoming the hard | |
