@@ -247,12 +247,24 @@ def sync_net(D, V):
     js = p.read_text(encoding='utf-8')
     m = re.search(r'(var DATA = )(\{.*?\})(;\s*\n)', js, re.S)
     data = json.loads(m.group(2))
+    # 先去掉 00.md 里已不存在的组；**再补上新增的组**——
+    # 只做过滤不补新增，新组就会整组缺席（C6 就这样漏了一版）。
     data['nodes'] = [x for x in data['nodes'] if x['id'] in D['names']]
+    have = {x['id'] for x in data['nodes']}
+    for g in D['order']:
+        if g not in have:
+            data['nodes'].append({'id': g, 'name': D['names'][g],
+                                  'dept': D['dept_of'][g][0],
+                                  'chs': [], 'n': 0})
     for x in data['nodes']:
         g = x['id']
         x['name'] = D['names'][g]
+        x['dept'] = D['dept_of'][g][0]
         x['chs'] = sorted(D['chs'][g])
         x['n'] = D['n'][g]
+    # 节点顺序按 00.md（部内次序），渲染与图例读起来才顺
+    idx = {g: i for i, g in enumerate(D['order'])}
+    data['nodes'].sort(key=lambda x: idx[x['id']])
     data['radial'] = [[a, b] for a, b in V['edges']]
     data['chord'] = [{'a': a, 'b': b, 'w': c, 'chs': s} for c, a, b, s in V['chords']]
     data['core'] = {}
