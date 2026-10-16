@@ -1,4 +1,4 @@
-/* 天网恢恢 · 关系图 */
+/* 天道星图 · 关系图 */
 .tdn-wrap {
   position: relative; margin: 1.2rem 0 2rem; padding: 10px;
   border-radius: 18px; overflow: hidden;
@@ -47,7 +47,7 @@
 .tdn-tag { display: inline-block; margin: 2px 5px 0 0; padding: 1px 9px;
   border: 1px solid; border-radius: 999px; font-size: 12.5px; }
 
-/* 天网恢恢页：内容栏加宽（其他页不受影响） */
+/* 天道星图页：内容栏加宽（其他页不受影响） */
 .content.tdn-wide .markdown-section {
   --content-max-width: 86rem;
   max-width: calc(100% - 2rem);

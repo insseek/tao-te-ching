@@ -1,6 +1,6 @@
 /* 站点通用样式（docsify 阅读页） */
 
-/* 天网恢恢入口 */
+/* 天道星图入口 */
 #tdn-entry {
   position: fixed; top: 14px; right: 16px; z-index: 60;
   display: inline-flex; align-items: center; gap: 8px;
@@ -73,7 +73,7 @@ body[data-page="/en.md"] #tdn-lang a.en { display: none; }
   .markdown-section table { display: block; overflow-x: auto; font-size: 13px; }
   .markdown-section pre { font-size: 12.5px; }
   body[data-page="/00.md"] .markdown-section blockquote { --blockquote-padding: 0.15em 0 0.15em .85em; }
-  /* 天网入口移到右下（避让标题，也便于拇指）；语言切换移到左下 */
+  /* 天道星图入口移到右下（避让标题，也便于拇指）；语言切换移到左下 */
   #tdn-entry { top: auto; bottom: 16px; right: 14px; }
   #tdn-lang { right: auto; left: 14px; bottom: 20px; }
 }

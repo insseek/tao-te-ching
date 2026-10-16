@@ -1,5 +1,5 @@
 * [里探《道德经》新编](00.md)
-* <a href="tian-wang.html" target="_self">天网恢恢：道生万物关系图</a>
+* <a href="tian-wang.html" target="_self">天道星图：道生万物关系图</a>
 * 里探《道德经》原文注释评说
 
   * [第一章：有无同出](01.md)
