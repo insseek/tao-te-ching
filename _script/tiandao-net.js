@@ -272,22 +272,34 @@
       am.appendChild(mp); dot.appendChild(am); gPulse.appendChild(dot);
     });
 
+    /* 星等：亮度编码「连接度」——这个组在网中有多中心。
+       半径已经编码句数，两者各管一件事，信息不重复。 */
+    var DEG = {};
+    DATA.nodes.forEach(function (n) { DEG[n.id] = 0; });
+    DATA.radial.forEach(function (p) { DEG[p[0]]++; DEG[p[1]]++; });
+    DATA.chord.forEach(function (e) { DEG[e.a]++; DEG[e.b]++; });
+    var DEG_MAX = Math.max.apply(null, DATA.nodes.map(function (n) { return DEG[n.id]; })) || 1;
+
     var nodeEls = {};
     DATA.nodes.forEach(function (n) {
       var p = pos[n.id], c = COLOR[n.dept], r = p.r;
       var g = el('g', { class: 'tdn-node', 'data-id': n.id, style: 'cursor:pointer' });
+      /* 0.42 是"暗星"的下限，1.0 是连接度最高的那一颗 */
+      g.style.setProperty('--star', (0.42 + 0.58 * (DEG[n.id] / DEG_MAX)).toFixed(3));
       /* 恒星：光晕 → 星芒 → 本体 → 白热核心 */
       g.appendChild(el('circle', {
         cx: p.x, cy: p.y, r: r * 5.4, fill: 'url(#tdn-halo-' + n.dept + ')',
-        opacity: 0.9, class: 'tdn-corona'
+        class: 'tdn-corona'
       }));
-      g.appendChild(spikes(p.x, p.y, r * 4.3, r * 0.115, c, 0.46));
+      var sp = spikes(p.x, p.y, r * 4.3, r * 0.115, c, 1);
+      sp.setAttribute('class', 'tdn-spike');
+      g.appendChild(sp);
       g.appendChild(el('circle', {
         cx: p.x, cy: p.y, r: r, fill: '#061024', stroke: c,
         'stroke-width': 1.6, 'stroke-opacity': .9
       }));
       g.appendChild(el('circle', { cx: p.x, cy: p.y, r: r * 0.72, fill: 'url(#tdn-core-' + n.dept + ')' }));
-      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: Math.max(2.2, r * 0.30), fill: '#ffffff' }));
+      g.appendChild(el('circle', { class: 'tdn-hot', cx: p.x, cy: p.y, r: Math.max(2.2, r * 0.30), fill: '#ffffff' }));
       var cos = Math.cos(p.a), vertical = Math.abs(cos) < 0.34, anchor, lx, ly;
       if (vertical) { anchor = 'middle'; lx = p.x; ly = p.y < 0 ? p.y - r - 40 : p.y + r + 26; }
       else if (cos > 0) { anchor = 'start'; lx = p.x + r + 16; ly = p.y + 6; }
@@ -441,7 +453,12 @@
     function highlight(ids) {
       var set = {}; (ids || []).forEach(function (i) { set[i] = 1; });
       var on = Object.keys(set).length > 0;
-      DATA.nodes.forEach(function (n) { ctx.nodeEls[n.id].style.opacity = (!on || set[n.id]) ? 1 : 0.12; });
+      DATA.nodes.forEach(function (n) {
+        var g = ctx.nodeEls[n.id];
+        g.style.opacity = (!on || set[n.id]) ? 1 : 0.12;
+        /* 触屏没有 hover：选中的那颗要保持全亮，否则一直是暗星 */
+        g.classList.toggle('tdn-on', !!(on && set[n.id]));
+      });
       /* 注意：只取带 data-rad 的路径。辐射组里还叠着一层柔光（data-rad-glow），
          若一并取来，它的 data-rad 为空，split 会抛错。 */
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad]'), function (p) {

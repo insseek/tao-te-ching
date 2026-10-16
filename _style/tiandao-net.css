@@ -294,3 +294,20 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 @media (prefers-reduced-motion: reduce) {
   .tdn-stars, .tdn-rays, .tdn-core, .tdn-neb, .tdn-node { animation: none !important; }
 }
+
+/* ===== 星等：平时收敛，交互时点亮 =====
+   --star 由 JS 按「连接度」写入（0.42 最暗 ~ 1.0 最亮）。
+   星芒与白热核心也一起随星等收放，整颗星明暗一致。
+   半径编码句数、亮度编码连接度，两个通道信息不重复。 */
+.tdn-node .tdn-corona { opacity: calc(var(--star, 1) * .48); transition: opacity .22s ease; }
+.tdn-node .tdn-spike  { opacity: calc(var(--star, 1) * .30); transition: opacity .22s ease; }
+.tdn-node .tdn-hot    { opacity: calc(.5 + var(--star, 1) * .5); transition: opacity .22s ease; }
+.tdn-node:hover .tdn-corona,
+.tdn-node.tdn-on .tdn-corona { opacity: var(--star, 1); }
+.tdn-node:hover .tdn-spike,
+.tdn-node.tdn-on .tdn-spike  { opacity: calc(var(--star, 1) * .78); }
+.tdn-node:hover .tdn-hot,
+.tdn-node.tdn-on .tdn-hot    { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .tdn-node .tdn-corona, .tdn-node .tdn-spike, .tdn-node .tdn-hot { transition: none; }
+}
