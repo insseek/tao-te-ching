@@ -466,8 +466,15 @@
        这三个函数是唯一的出处——highlight() 也必须走它们，
        否则离开节点时 highlight(null) 会按"图外常态"写回，
        把还在圈内的中间态抹掉（这是曾经的 bug）。 */
-    function baseRad() { return hoverOn ? HOVER_LINE : 0.18; }
-    function baseGlow() { return hoverOn ? HOVER_GLOW : 0.07; }
+    /* 两个层次，别混：
+       rest*＝常态下限（图外，或"选了部"时——部视图必须稳定，不随鼠标变）；
+       base*＝当前鼠标位置对应的基准（图外走 rest，图内走中间态）。 */
+    var REST_LINE = 0.18, REST_GLOW = 0.07;
+    function restRad() { return REST_LINE; }
+    function restGlow() { return REST_GLOW; }
+    function restChord(b) { return b; }
+    function baseRad() { return hoverOn ? HOVER_LINE : REST_LINE; }
+    function baseGlow() { return hoverOn ? HOVER_GLOW : REST_GLOW; }
     function baseChord(b) { return hoverOn ? Math.min(b * 1.9, HOVER_CHORD) : b; }
     function hoverWeb() {
       if (svg.classList.contains('tdn-sel')) return;
@@ -508,7 +515,8 @@
       gChord: gChord, gRadial: gRadial, gPulse: gPulse,
       onCoreClick: null,
       /* 供 highlight() 取"当前常态值"——随鼠标是否在 D 环内而变 */
-      baseRad: baseRad, baseGlow: baseGlow, baseChord: baseChord
+      baseRad: baseRad, baseGlow: baseGlow, baseChord: baseChord,
+      restRad: restRad, restGlow: restGlow, restChord: restChord
     };
     return API;
   }
@@ -614,18 +622,25 @@
     }
 
     /* ---------- 高亮 ---------- */
-    function highlight(ids) {
+    /* preview=true 表示这是"节点悬停预览"，不是一次真正的选中。
+       预览时不吃部模式——否则非相关的线会掉进 baseRad()，
+       而鼠标此刻正在 D 环内（悬停节点必然在圈内），baseRad() 返回中间态 0.45，
+       结果所有线一起亮起来（这是曾经的 bug）。 */
+    function highlight(ids, preview) {
       var set = {}; (ids || []).forEach(function (i) { set[i] = 1; });
       var on = Object.keys(set).length > 0;
       ctx.svg.classList.toggle('tdn-sel', on);   /* 有选中时，图面悬停不再提亮全网 */
       /* 选的是"部"而不是某一组时：这一部的含义是"皆由道派生"，
          故不点亮任何连线，只把该部的圆环与中央「道」亮出来。 */
       var dsel = (SEL && SEL.leg) ? SEL.leg.getAttribute('data-dept') : null;
+      /* 环始终按"选中的部"处理（悬停预览时也不灭）；
+         连线则用 dOnly——预览时置空，走普通的节点预览逻辑。 */
+      var dOnly = preview ? null : dsel;
       /* 选部时，除该部本身，还要把它的"道源"一并显出来（但压暗一档）。
          依据就是 DATA.radial（源→用）：凡 u → v 且 v 属于该部，则 u 是它的源。
          二部的源只有道（A1），已由中央承担，故二部自然没有额外的上游节点。 */
       var up = {};
-      if (dsel) {
+      if (dOnly) {
         DATA.radial.forEach(function (pair) {
           if (set[pair[1]] && !set[pair[0]]) up[pair[0]] = 1;
         });
@@ -635,7 +650,7 @@
         /* A1「道生万物」没有节点元素——它就是中央的「道」。
            选中 A1 时让中央亮一档，而不是去碰不存在的节点。 */
         if (!g) {
-          if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && (set['A1'] || dsel)));
+          if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && (set['A1'] || dOnly)));
           return;
         }
         g.style.opacity = (!on || set[n.id]) ? 1 : (up[n.id] ? 0.62 : 0.12);
@@ -649,18 +664,18 @@
         var s = a.split('|');
         /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
            有选中 → 只亮该组相关的，其余更淡。 */
-        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
-        var upEdge = dsel && set[s[1]] && !set[s[0]];      /* 指向该部的源→用 */
+        var lit = on && !dOnly && (set[s[0]] || set[s[1]]);
+        var upEdge = dOnly && set[s[1]] && !set[s[0]];      /* 指向该部的源→用 */
         p.setAttribute('stroke-opacity',
-          !on ? ctx.baseRad() : (dsel ? (upEdge ? 0.45 : ctx.baseRad()) : (lit ? 0.92 : 0.02)));
+          !on ? ctx.baseRad() : (dOnly ? (upEdge ? 0.45 : ctx.restRad()) : (lit ? 0.92 : 0.02)));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
-        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
-        var upEdge = dsel && set[s[1]] && !set[s[0]];
+        var lit = on && !dOnly && (set[s[0]] || set[s[1]]);
+        var upEdge = dOnly && set[s[1]] && !set[s[0]];
         p.setAttribute('stroke-opacity',
-          !on ? ctx.baseGlow() : (dsel ? (upEdge ? 0.18 : ctx.baseGlow()) : (lit ? 0.40 : 0.01)));
+          !on ? ctx.baseGlow() : (dOnly ? (upEdge ? 0.18 : ctx.restGlow()) : (lit ? 0.40 : 0.01)));
       });
       /* 环：选部时只亮该部那一个，其余压暗；没选部则都回基准 */
       Array.prototype.forEach.call(ctx.svg.querySelectorAll('.tdn-ring'), function (r) {
@@ -672,10 +687,10 @@
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
-        var lit = on && !dsel && (set[s[0]] || set[s[1]]);
+        var lit = on && !dOnly && (set[s[0]] || set[s[1]]);
         /* 无选中（或选的是"部"）→ 回到常态，细弦按自己的权重；
            选中某一组 → 相关的弦提亮，其余压到几乎不见。 */
-        p.setAttribute('stroke-opacity', (!on || dsel) ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
+        p.setAttribute('stroke-opacity', dOnly ? ctx.restChord(b) : (!on ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012)));
       });
     }
 
@@ -766,7 +781,7 @@
       var g = ctx.nodeEls[id], n = byId[id];
       g.style.transition = 'opacity .25s';
       g.addEventListener('mouseenter', function () {
-        highlight([id]);                       /* 仅预览，不动 SEL */
+        highlight([id], true);                 /* 仅预览，不动 SEL */
         readout.innerHTML = nodeHTML(id);
       });
       g.addEventListener('mouseleave', function () {
