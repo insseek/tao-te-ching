@@ -490,6 +490,8 @@
       style: 'paint-order:stroke;stroke:#04060f;stroke-width:4'
     }));
     /* 环着深渊的四句状道之词：渊兮、湛兮、寂兮、独立。
+       【此四句与下方悬停浮文，用户已明确"可以写死"——它们是选文，不是数据，
+         不必从 00.md 抽取。以后看到这两处，别当成漏网的写死项去改。】
        极淡、衬线、贴着渊的边缘——要的是"看出来"而不是"读到"。 */
     [['渊兮', -118, -78, 'end'], ['湛兮，似或存', 118, -78, 'start'],
      ['寂兮寥兮', -118, 96, 'end'], ['独立不改', 118, 96, 'start']].forEach(function (q) {
@@ -537,6 +539,7 @@
        不用浏览器原生 title —— 那是系统方框，与星空、大道不搭。 */
     var verse = document.createElement('div');
     verse.className = 'tdn-verse';
+    /* 悬停中央时浮现的三段原文。同上：属选文，用户定可写死。 */
     verse.innerHTML =
       '<i class="rule"></i>' +
       '<span>道生一，一生二，二生三，三生万物</span>' +
