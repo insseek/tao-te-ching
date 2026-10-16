@@ -8,9 +8,8 @@
 从 00.md 导出：
   88.md    分组总表（组名／收录章／句数／合计）
            表一 源→用（取自每组下方「道源正行：」标注，方向取反）
-           表二 共章弦（两组收录章交集 ≥2 章）
-           表三 章→组（出现在 3 组以上的章）
-           承重句总表（各句现落在哪些组）
+           （共章弦、章→组反查、承重句总表已撤：新编把 81 章打散重排，
+             共章共句不构成组间关系，见下方 sync_88 里的说明）
   天网     不在此脚本内——页面运行时直接 fetch 00.md 并现场解析（见 tiandao-net.js 的 parse00）
   en.md    英文导览的组名对照
 
@@ -103,20 +102,9 @@ def short(name):
 def build_derived(D):
     order, chs = D['order'], D['chs']
     edges = sorted({(t, g) for g, ts in D['src'].items() for t in ts})
-    chords = []
-    for i in range(len(order)):
-        for j in range(i + 1, len(order)):
-            sh = sorted(chs[order[i]] & chs[order[j]])
-            if len(sh) >= 2:
-                chords.append((len(sh), order[i], order[j], sh))
-    chords.sort(key=lambda x: (-x[0], x[1], x[2]))
-    ch2g = {}
-    for g in order:
-        for c in chs[g]:
-            ch2g.setdefault(c, set()).add(g)
-    multi = sorted([(len(v), c, sorted(v)) for c, v in ch2g.items() if len(v) >= 3],
-                   key=lambda x: (-x[0], x[1]))
-    return dict(edges=edges, chords=chords, multi=multi)
+    # 共章弦、≥3 组的章反查：已随用户「打散重排、共章不构成关系」的决定撤除，
+    # 这里不再计算，88.md 也不再有表二、表三。
+    return dict(edges=edges)
 
 
 # ---------------------------------------------------------------- 表格工具
@@ -181,59 +169,20 @@ def sync_88(D, V):
                       r'### 表一　[^\n]*\n\n[^\n]*\n\n\| 二部·源 \| 三部·修身 \| 四部·治国 \|\n\|[-|]+\|\n',
                       rows)
 
-    # —— 表二 共章弦
-    rows = []
-    mx = V['chords'][0][0] if V['chords'] else 0
-    for c, a, b, s in V['chords']:
-        if c == mx:
-            rows.append('| **%d** | **%s ↔ %s** | %s |' % (c, a, b, ' '.join(num2cn(x) for x in s)))
-        else:
-            rows.append('| %d | %s ↔ %s | %s |' % (c, a, b, ' '.join(num2cn(x) for x in s)))
-    t = replace_table(t, r'\| 共章 \| 组对 \| 章 \|\n\|[-|]+\|\n', rows)
-
-    # —— 表三 章→组
-    rows = []
-    mx3 = V['multi'][0][0] if V['multi'] else 0
-    for c, ch, gs in V['multi']:
-        head = '**%d**' % c if c >= 4 else str(c)
-        tag = '（**%d 组**）' % c if c == mx3 else '（%d 组）' % c
-        rows.append('| %s | %s%s |' % (head, ' '.join(gs), tag))
-    t = replace_table(t,
-                      r'\| 章 \| 落点组 \|\n\|[-|]+\|\n', rows)
+    # —— 撤掉按"共章/共句"派生的章节
+    #     用户定：新编就是把 81 章全部打散重排，共章共句不构成组间关系。
+    #     故表二（共章弦）、表三（章→组反查）、承重句总表一并撤除。
+    t = re.sub(r'### 表二　[^\n]*\n\n(?:\|[^\n]*\n)+\n?', '', t)
+    t = re.sub(r'### 表三　[^\n]*\n\n[^\n]*\n\n(?:\|[^\n]*\n)+\n?', '', t)
+    t = re.sub(r'## 〇之三、承重句总表\n.*?(?=## 〇之四)', '', t, flags=re.S)
+    t = t.replace('## 〇之二、关系总表', '## 〇之二、源 → 用')
+    t = t.replace('## 〇之四、评价标准', '## 〇之三、评价标准')
+    t = t.replace('## 〇之五、分组规矩', '## 〇之四、分组规矩')
+    t = t.replace('关系、承重句与评价标准', '源→用关系与评价标准')
 
     # —— 撤掉核心词一节（用户定：每个分组本身就是核心词，冗余）
     t = re.sub(r'### 核心词 → 落点组[^\n]*\n\n(?:\|[^\n]*\n)+\n?', '', t)
 
-    # —— 承重句总表
-    #    句单与「说明」是人工策展的，固化在下面的 SENTENCES／SENT_NOTE 里；
-    #    各句现落在哪些组由 00.md 实时算出。句单一旦从表里删掉就再也读不回来，
-    #    故不能反过来从 88.md 抓（本脚本第一版就吃了这个亏）。
-    doc00 = (ROOT / '00.md').read_text(encoding='utf-8')
-    segs = {}
-    for g in order:
-        m = re.search(r'^### ' + g + r'　.*?(?=^### |^## |\Z)', doc00, re.M | re.S)
-        segs[g] = m.group(0).replace(' ', '') if m else ''
-    rows, cross, left = [], 0, []
-    for s in SENTENCES:
-        got = [g for g in order if s.replace(' ', '') in segs[g]]
-        note = SENT_NOTE.get(s, '')
-        if len(got) >= 2:
-            cross += 1
-        else:
-            note = (note + '　**（已不再跨组）**').strip()
-            left.append((s, got))
-        rows.append('| %s | %s | %s |' % (s, ' '.join(got) if got else '（无）', note))
-    t = replace_table(t, r'\| 句 \| 组 \| 说明 \|\n\|[-|]+\|\n', rows)
-    t = re.sub(r'\*\*\d+ 句跨组重复\*\*', '**%d 句跨组重复**' % cross, t)
-    t = re.sub(r'\n\*\*已不再跨组\*\*[^\n]*\n', '\n', t)
-    if left:
-        t = t.replace('\n---\n\n## 〇之四',
-                      '\n\n**已不再跨组**（现只落一组，仍可能是重要句，待人工处置）：'
-                      + '；'.join('%s（%s）' % (s, ' '.join(g) or '无') for s, g in left)
-                      + '。\n\n---\n\n## 〇之四', 1)
-    # 表三引言原提「核心词」——核心词功能已撤（用户定：每个分组本身就是核心词）
-    t = t.replace('「任何一个核心词能把整张网拎起来」——这些章就是网眼最密处。',
-                  '这些章同时落在三个以上的组，是全网网眼最密处。')
     # —— 各处旧简称换成现名
     for old, new in OLD_SHORT:
         t = t.replace('**' + old + '**', '**' + new + '**')
@@ -335,9 +284,8 @@ OLD_SHORT = [
 def main():
     D = parse_00()
     V = build_derived(D)
-    print('00.md：%d 组｜引文行 %d｜道源正行 %d 组 → 源→用 %d 条｜共章弦 %d 条｜≥3 组的章 %d 个'
-          % (len(D['order']), sum(D['n'].values()), len(D['src']),
-             len(V['edges']), len(V['chords']), len(V['multi'])))
+    print('00.md：%d 组｜引文行 %d｜有道源 %d 组 → 源→用 %d 条'
+          % (len(D['order']), sum(D['n'].values()), len(D['src']), len(V['edges'])))
     for w in D.get('warn', []):
         print('  ⚠️  ' + w)
     sync_88(D, V)

@@ -87,20 +87,9 @@
       }
     })();
 
-    /* 共章弦：两组收录章交集 ≥2 章 */
-    var chord = [];
-    for (var i = 0; i < order.length; i++) {
-      for (var j = i + 1; j < order.length; j++) {
-        var A = byKey[order[i]], B = byKey[order[j]];
-        var sh = A.chs.filter(function (c) { return B.chs.indexOf(c) >= 0; });
-        if (sh.length >= 2) chord.push({ a: A.id, b: B.id, w: sh.length, chs: sh });
-      }
-    }
-    chord.sort(function (x, y) { return y.w - x.w || (x.a < y.a ? -1 : 1); });
-
     return {
       depts: depts, nodes: nodes, order: order, byKey: byKey,
-      radial: radial, to: to, gen: gen, root: root, chord: chord
+      radial: radial, to: to, gen: gen, root: root
     };
   }
   window.__tdnParse00 = parse00;   /* 供验证脚本直接调用 */
@@ -221,8 +210,7 @@
     });
 
     /* A1「道生万物」＝中央的「道」。给它原点坐标，不渲染成节点；
-       这样 DATA.radial 里 A1 出发的两条、DATA.chord 里涉及 A1 的三条，
-       都会自动从中央射出／牵出，无需另写分支。 */
+       这样 DATA.radial 里 A1 出发的那些边会自动从中央射出，无需另写分支。 */
     pos['A1'] = { x: 0, y: 0, a: 0, r: 56 };
 
     var W = 2760, H = 1300;
@@ -351,9 +339,9 @@
       g.style.pointerEvents = 'none';
     });
 
-    var gRing = el('g'), gChord = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
-    [gRing, gChord, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
-    [gRing, gChord, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
+    var gRing = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
+    [gRing, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
+    [gRing, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
 
     order.forEach(function (d, di) {
       var R = RING[d], c = COLOR[d];
@@ -363,19 +351,6 @@
         cx: 0, cy: 0, rx: R * AX, ry: R * AY, fill: 'none', stroke: c,
         'stroke-opacity': 0.26, 'stroke-width': 1.4, 'stroke-dasharray': '3 9'
       }));
-    });
-
-    DATA.chord.forEach(function (e) {
-      var p = pos[e.a], q = pos[e.b];
-      var mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2, k = 0.16;
-      var path = el('path', {
-        d: 'M' + p.x + ',' + p.y + ' Q' + (mx * (1 - k)) + ',' + (my * (1 - k)) + ' ' + q.x + ',' + q.y,
-        fill: 'none', stroke: '#cbd5e1', 'stroke-opacity': 0.05 + e.w * 0.04,
-        'stroke-width': 0.9 + e.w * 0.5, 'stroke-dasharray': '5 7',
-        'data-chord': e.a + '|' + e.b, 'data-base': 0.05 + e.w * 0.04
-      });
-      var t = el('title'); t.textContent = e.a + ' ↔ ' + e.b + '：共 ' + e.w + ' 章（' + e.chs.join(' ') + '）';
-      path.appendChild(t); gChord.appendChild(path);
     });
 
     DATA.radial.forEach(function (pair, i) {
@@ -410,7 +385,7 @@
     var DEG = {};
     DATA.nodes.forEach(function (n) { DEG[n.id] = 0; });
     DATA.radial.forEach(function (p) { DEG[p[0]]++; DEG[p[1]]++; });
-    DATA.chord.forEach(function (e) { DEG[e.a]++; DEG[e.b]++; });
+    /* 连接度只按源→用计（共章弦已撤：新编打散重排，同章不构成关系） */
     var DEG_MAX = Math.max.apply(null, DATA.nodes.map(function (n) { return DEG[n.id]; })) || 1;
 
     var nodeEls = {};
@@ -473,7 +448,7 @@
     /* 核心只留一点微光：「似或存」 */
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: 'url(#tdn-halo)', opacity: .30 }));
     /* 中央「道」：要与「渊」相称——衬线、微光、不刺眼。
-       位置：**字形正中压在原点**上——源→用与共章弦都从原点射出，
+       位置：**字形正中压在原点**上——源→用都从原点射出，
        字若偏上，线就从字下方穿过，看着别扭。
        （SVG 文本的 y 是基线，故基线取 +26 才让 76 号字的视觉中心落在 0。） */
     gc.appendChild(tx(0, 26, '道', {
@@ -572,7 +547,7 @@
        常态只是"若有若无"，全貌要看不清；但一进来就全亮又太吵。
        故取中间值：能看出网的走向，又不夺节点与中央。
        已有选中（tdn-sel）时让路——那时的亮暗由选中态决定。 */
-    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_CHORD = 0.45;
+    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18;
     var hoverOn = false;
     /* 线的「常态」不是一个定值，取决于鼠标在不在 D 环里。
        这三个函数是唯一的出处——highlight() 也必须走它们，
@@ -584,10 +559,8 @@
     var REST_LINE = 0.18, REST_GLOW = 0.07;
     function restRad() { return REST_LINE; }
     function restGlow() { return REST_GLOW; }
-    function restChord(b) { return b; }
     function baseRad() { return hoverOn ? HOVER_LINE : REST_LINE; }
     function baseGlow() { return hoverOn ? HOVER_GLOW : REST_GLOW; }
-    function baseChord(b) { return hoverOn ? Math.min(b * 1.9, HOVER_CHORD) : b; }
     function hoverWeb() {
       if (svg.classList.contains('tdn-sel')) return;
       Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad]'), function (p) {
@@ -595,9 +568,6 @@
       });
       Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         p.setAttribute('stroke-opacity', baseGlow());
-      });
-      Array.prototype.forEach.call(gChord.querySelectorAll('path'), function (p) {
-        p.setAttribute('stroke-opacity', baseChord(+(p.getAttribute('data-base') || 0.1)));
       });
     }
     /* D 环是椭圆（rx = R×AX，ry = R×AY），按椭圆方程判"圈内" */
@@ -624,11 +594,11 @@
        build 取不到它，只能留一个回调口子。 */
     API = {
       svg: svg, stage: stage, nodeEls: nodeEls,
-      gChord: gChord, gRadial: gRadial, gPulse: gPulse,
+      gRadial: gRadial, gPulse: gPulse,
       onCoreClick: null,
       /* 供 highlight() 取"当前常态值"——随鼠标是否在 D 环内而变 */
-      baseRad: baseRad, baseGlow: baseGlow, baseChord: baseChord,
-      restRad: restRad, restGlow: restGlow, restChord: restChord
+      baseRad: baseRad, baseGlow: baseGlow,
+      restRad: restRad, restGlow: restGlow
     };
     return API;
   }
@@ -684,9 +654,6 @@
 
       var use = DATA.radial.filter(function (p) { return p[1] === id; }).map(function (p) { return p[0]; });
       var src = DATA.radial.filter(function (p) { return p[0] === id; }).map(function (p) { return p[1]; });
-      var near = DATA.chord.filter(function (e) { return e.a === id || e.b === id; })
-        .sort(function (a, b) { return b.w - a.w; })
-        .map(function (e) { return { id: e.a === id ? e.b : e.a, w: e.w }; });
       function chips(list) {
         return list.map(function (x) {
           var o = byId[x];
@@ -697,12 +664,6 @@
         '<h4>牵连</h4>' +
         '<div class="tdn-rel-row"><span class="tdn-rel-k">源（我出于）</span>' + chips(use) + '</div>' +
         '<div class="tdn-rel-row"><span class="tdn-rel-k">用（我流向）</span>' + chips(src) + '</div>' +
-        '<div class="tdn-rel-row"><span class="tdn-rel-k">共章相连</span>' +
-          (near.map(function (e) {
-            var o = byId[e.id];
-            return '<button class="tdn-jump" data-id="' + e.id + '" style="--c:' + COLOR[o.dept] + '">' +
-              e.id + ' ' + esc(o.name) + ' <i>' + e.w + '章</i></button>';
-          }).join('') || '<span class="tdn-none">—</span>') + '</div>';
 
       loadDoc().then(function (doc) {
         var list = doc[id], vh = '';
@@ -758,15 +719,10 @@
         });
       } else if (on) {
         /* 节点模式：把与选中节点有线相连的那些也点亮到半亮——
-           否则线是亮的，对面是谁却看不出来（用户指出的问题）。
-           源→用与共章弦都算相连。 */
+           否则线是亮的，对面是谁却看不出来（用户指出的问题）。 */
         DATA.radial.forEach(function (pair) {
           if (set[pair[0]] && !set[pair[1]]) nb[pair[1]] = 1;
           if (set[pair[1]] && !set[pair[0]]) nb[pair[0]] = 1;
-        });
-        DATA.chord.forEach(function (c) {
-          if (set[c.a] && !set[c.b]) nb[c.b] = 1;
-          if (set[c.b] && !set[c.a]) nb[c.a] = 1;
         });
       }
       DATA.nodes.forEach(function (n) {
@@ -808,13 +764,6 @@
         var mine = r.getAttribute('data-dept') === dsel;
         r.setAttribute('stroke-opacity', mine ? 0.9 : 0.05);
         r.setAttribute('stroke-width', mine ? 3 : 1.4);
-      });
-      Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
-        var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
-        var lit = on && !dOnly && (set[s[0]] || set[s[1]]);
-        /* 无选中（或选的是"部"）→ 回到常态，细弦按自己的权重；
-           选中某一组 → 相关的弦提亮，其余压到几乎不见。 */
-        p.setAttribute('stroke-opacity', dOnly ? ctx.restChord(b) : (!on ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012)));
       });
     }
 
@@ -916,7 +865,7 @@
 
     var bar2 = document.createElement('div');
     bar2.className = 'tdn-chips tdn-toggles';
-    [['共章弦', ctx.gChord], ['源→用', ctx.gRadial], ['流动', ctx.gPulse]].forEach(function (pair) {
+    [['源→用', ctx.gRadial], ['流动', ctx.gPulse]].forEach(function (pair) {
       var b = document.createElement('button');
       b.className = 'tdn-chip on'; b.textContent = pair[0];
       b.onclick = function () {

@@ -381,7 +381,6 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
    与其把浮文做成一个框，不如让万物退隐——这也正是「玄之又玄」的意思。 */
 .tdn-node text { transition: opacity .55s ease; }
 .tdn-svg.tdn-focus .tdn-node text { opacity: .16; }
-.tdn-svg.tdn-focus [data-chord] { stroke-opacity: .015; }
 .tdn-svg.tdn-focus [data-rad],
 .tdn-svg.tdn-focus [data-rad-glow] { stroke-opacity: .05; }
 .tdn-svg.tdn-focus .tdn-neb { opacity: .5; }
