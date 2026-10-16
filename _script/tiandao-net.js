@@ -362,16 +362,18 @@
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#dbe7ff', 'stroke-opacity': .34, 'stroke-width': 1.4 }));
     /* 核心只留一点微光：「似或存」 */
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: 'url(#tdn-halo)', opacity: .30 }));
-    /* 中央「道」：要与「渊」相称——衬线、微光、不刺眼，
-       两行整体（道 + 道生万物）居中于圆环，而不是各自偏下。 */
-    gc.appendChild(tx(0, -10, '道', {
+    /* 中央「道」：要与「渊」相称——衬线、微光、不刺眼。
+       位置：**字形正中压在原点**上——源→用与共章弦都从原点射出，
+       字若偏上，线就从字下方穿过，看着别扭。
+       （SVG 文本的 y 是基线，故基线取 +26 才让 76 号字的视觉中心落在 0。） */
+    gc.appendChild(tx(0, 26, '道', {
       fill: '#eaf1ff', 'font-size': 76, 'font-weight': 500, 'text-anchor': 'middle',
       'fill-opacity': .94, filter: 'url(#tdn-glow)',
       'font-family': '"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",Georgia,serif',
       style: 'paint-order:stroke;stroke:#04060f;stroke-width:4'
     }));
-    /* 中央即 A1「道生万物」——把组名写在道上，点它读该组原文 */
-    gc.appendChild(tx(0, 46, '道生万物', {
+    /* 中央即 A1「道生万物」——把组名写在小圆下方，点它读该组原文 */
+    gc.appendChild(tx(0, 92, '道生万物', {
       fill: '#c2d6f5', 'font-size': 26, 'font-weight': 500, 'text-anchor': 'middle',
       'fill-opacity': .86, 'letter-spacing': 4,
       'font-family': '"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",Georgia,serif',
