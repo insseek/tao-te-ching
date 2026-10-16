@@ -18,13 +18,13 @@ Every sentence of the original is kept — nothing added, nothing dropped — bu
 Each chapter has five sections: original text · character notes · literal rendering · commentary · related chapters.
 
 **2 · Grouping, clarifying, evaluating** — 88.md
-The 81 chapters are broken down into sentences and sorted into **4 parts / 22 groups**.
+The 81 chapters are broken down into sentences and sorted into **4 parts / 21 groups**.
 
 **3 · The re-edition** — 00.md
 All sentences re-ordered by meaning. Every sentence keeps a marker of its source chapter, so nothing becomes untraceable.
 
 **4 · The star map** — 天道星图 (tian-wang.html), titled on the page after chapter 73: 天网恢恢，疏而不失
-An interactive map. **The Dao at the centre**, four rings for the four parts, 22 groups as nodes; two kinds of link — *source → use* (a principle flowing into its application) and *shared chapters* (two groups drawing on the same chapter). **Click any node** to read that group's original sentences, the commentary, and its connections.
+An interactive map. **The Dao at the centre** — the centre *is* the group A1 (道生万物, "the Dao gives birth to the one"); three rings outward for parts 2–4, with 20 groups as nodes; two kinds of link — *source → use* (a principle flowing into its application) and *shared chapters* (two groups drawing on the same chapter). **Click any node** to read that group's original sentences, the commentary, and its connections.
 
 ## The four parts
 
@@ -37,7 +37,7 @@ An interactive map. **The Dao at the centre**, four rings for the four parts, 22
 
 **All 81 chapters are covered.**
 
-## The 22 groups
+## The 21 groups
 
 Glosses are deliberately short — they point, they do not translate.
 
