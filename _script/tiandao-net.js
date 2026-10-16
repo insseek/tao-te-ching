@@ -106,18 +106,105 @@
       viewBox: (-W / 2) + ' ' + (-H / 2) + ' ' + W + ' ' + H,
       class: 'tdn-svg', preserveAspectRatio: 'xMidYMid meet'
     });
+    /* 星图配色：光晕与核心一律用径向渐变（比 feGaussianBlur 便宜得多，
+       移动端才跑得动；滤镜只留给中央「道」） */
+    var DEFS = [
+      '<radialGradient id="tdn-bg" cx="50%" cy="48%" r="64%">',
+      '<stop offset="0%" stop-color="#132049"/><stop offset="34%" stop-color="#0a1128"/>',
+      '<stop offset="72%" stop-color="#05080f"/><stop offset="100%" stop-color="#02030a"/>',
+      '</radialGradient>',
+      '<radialGradient id="tdn-halo">',
+      '<stop offset="0%" stop-color="#dbe7ff" stop-opacity=".60"/>',
+      '<stop offset="34%" stop-color="#8fb4ff" stop-opacity=".18"/>',
+      '<stop offset="100%" stop-color="#8fb4ff" stop-opacity="0"/></radialGradient>'
+    ];
+    ['一', '二', '三', '四'].forEach(function (d) {
+      var c = COLOR[d];
+      DEFS.push('<radialGradient id="tdn-halo-' + d + '">' +
+        '<stop offset="0%" stop-color="' + c + '" stop-opacity=".78"/>' +
+        '<stop offset="38%" stop-color="' + c + '" stop-opacity=".20"/>' +
+        '<stop offset="100%" stop-color="' + c + '" stop-opacity="0"/></radialGradient>');
+      DEFS.push('<radialGradient id="tdn-core-' + d + '">' +
+        '<stop offset="0%" stop-color="#ffffff"/>' +
+        '<stop offset="42%" stop-color="' + c + '"/>' +
+        '<stop offset="100%" stop-color="' + c + '" stop-opacity=".10"/></radialGradient>');
+    });
+    /* 星云：几团极淡的大色斑，制造纵深 */
+    [['#3b5bdb', .26], ['#7048e8', .20], ['#0ea5a5', .16], ['#8b5cf6', .17]]
+      .forEach(function (n, i) {
+        DEFS.push('<radialGradient id="tdn-neb' + i + '">' +
+          '<stop offset="0%" stop-color="' + n[0] + '" stop-opacity="' + n[1] + '"/>' +
+          '<stop offset="55%" stop-color="' + n[0] + '" stop-opacity="' + (n[1] * .34).toFixed(3) + '"/>' +
+          '<stop offset="100%" stop-color="' + n[0] + '" stop-opacity="0"/></radialGradient>');
+      });
+    DEFS.push('<filter id="tdn-glow" x="-90%" y="-90%" width="280%" height="280%">',
+      '<feGaussianBlur stdDeviation="7" result="b"/><feMerge>',
+      '<feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>');
     var defs = el('defs');
-    defs.innerHTML =
-      '<radialGradient id="tdn-bg" cx="50%" cy="50%" r="55%">' +
-        '<stop offset="0%" stop-color="#16244d"/><stop offset="45%" stop-color="#0a1128"/>' +
-        '<stop offset="100%" stop-color="#04060f"/></radialGradient>' +
-      '<filter id="tdn-glow" x="-90%" y="-90%" width="280%" height="280%">' +
-        '<feGaussianBlur stdDeviation="7" result="b"/><feMerge>' +
-        '<feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
-      '<filter id="tdn-soft" x="-60%" y="-60%" width="220%" height="220%">' +
-        '<feGaussianBlur stdDeviation="3.4"/></filter>';
+    defs.innerHTML = DEFS.join('');
     svg.appendChild(defs);
+
+    /* 定种随机：星野位置每次刷新都一致，便于核对与复现 */
+    function rng(seed) {
+      return function () { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    }
+    var rnd = rng(20261015);
+    /* 四芒星芒：一条 path 两个子路径，比两个元素便宜 */
+    function spikes(x, y, L, w, color, op) {
+      w = w || L * 0.055;
+      return el('path', {
+        d: 'M' + x + ',' + (y - L) + ' L' + (x + w) + ',' + y + ' L' + x + ',' + (y + L) + ' L' + (x - w) + ',' + y + ' Z' +
+           'M' + (x - L) + ',' + y + ' L' + x + ',' + (y - w) + ' L' + (x + L) + ',' + y + ' L' + x + ',' + (y + w) + ' Z',
+        fill: color, opacity: op
+      });
+    }
     svg.appendChild(el('rect', { x: -W / 2, y: -H / 2, width: W, height: H, fill: 'url(#tdn-bg)' }));
+
+    /* 星云（在星野之下） */
+    var gNeb = el('g', { class: 'tdn-neb' });
+    [[-0.30, -0.34, 1150, 720, 0], [0.34, 0.26, 980, 640, 1],
+     [-0.38, 0.30, 860, 560, 2], [0.40, -0.28, 900, 600, 3]]
+      .forEach(function (n) {
+        gNeb.appendChild(el('ellipse', {
+          cx: n[0] * W, cy: n[1] * H, rx: n[2], ry: n[3], fill: 'url(#tdn-neb' + n[4] + ')'
+        }));
+      });
+    svg.appendChild(gNeb);
+
+    /* 星野：三层，明暗与大小不同，CSS 各自呼吸 */
+    function starLayer(n, rmin, rmax, omin, omax, fill) {
+      var g = el('g', { class: 'tdn-stars' });
+      for (var i = 0; i < n; i++) {
+        g.appendChild(el('circle', {
+          cx: ((rnd() - 0.5) * W * 1.04).toFixed(1),
+          cy: ((rnd() - 0.5) * H * 1.04).toFixed(1),
+          r: (rmin + rnd() * (rmax - rmin)).toFixed(2),
+          fill: fill || '#dce8ff',
+          opacity: (omin + rnd() * (omax - omin)).toFixed(3)
+        }));
+      }
+      return g;
+    }
+    /* 小屏减星：900 颗星对手机偏重，按视口宽度降档 */
+    var small = (window.innerWidth || 1200) < 760;
+    var N1 = small ? 300 : 620, N2 = small ? 100 : 210, N3 = small ? 26 : 52, NB = small ? 5 : 9;
+    var gFar = starLayer(N1, 0.5, 1.15, 0.12, 0.42);
+    gFar.setAttribute('class', 'tdn-stars tdn-tw-1');
+    var gMid = starLayer(N2, 1.1, 1.9, 0.25, 0.62, '#e8eeff');
+    gMid.setAttribute('class', 'tdn-stars tdn-tw-2');
+    var gNear = starLayer(N3, 1.9, 2.9, 0.40, 0.85, '#ffffff');
+    gNear.setAttribute('class', 'tdn-stars tdn-tw-3');
+    /* 亮星：带光晕与星芒 */
+    var gBright = el('g', { class: 'tdn-stars' });
+    for (var bi = 0; bi < NB; bi++) {
+      var bx = (rnd() - 0.5) * W * 0.96, by = (rnd() - 0.5) * H * 0.96;
+      var br = 2.6 + rnd() * 1.8;
+      gBright.appendChild(el('circle', { cx: bx, cy: by, r: br * 9, fill: 'url(#tdn-halo)', opacity: .55 }));
+      gBright.appendChild(spikes(bx, by, br * 8, br * 0.5, '#ffffff', .20));
+      gBright.appendChild(el('circle', { cx: bx, cy: by, r: br, fill: '#ffffff' }));
+    }
+    gBright.setAttribute('class', 'tdn-stars tdn-tw-4');
+    svg.appendChild(gFar); svg.appendChild(gMid); svg.appendChild(gNear); svg.appendChild(gBright);
 
     var gRing = el('g'), gChord = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
     [gRing, gChord, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
@@ -156,8 +243,16 @@
         'stroke-width': 1.9, 'data-rad': pair[0] + '|' + pair[1]
       });
       var t = el('title'); t.textContent = pair[0] + ' → ' + pair[1]; path.appendChild(t);
+      /* 底层柔光：同一条路径画粗、低透明度，做出光流质感（比模糊滤镜便宜） */
+      gRadial.appendChild(el('path', {
+        d: path.getAttribute('d'), fill: 'none', stroke: COLOR[byId[pair[0]].dept],
+        'stroke-opacity': 0.13, 'stroke-width': 7, 'stroke-linecap': 'round',
+        'data-rad-glow': pair[0] + '|' + pair[1]
+      }));
       gRadial.appendChild(path);
-      var dot = el('circle', { r: 4.8, fill: COLOR[byId[pair[1]].dept], filter: 'url(#tdn-glow)', opacity: 0.95 });
+      var dotC = COLOR[byId[pair[1]].dept];
+      var dot = el('circle', { r: 6.2, fill: 'url(#tdn-halo-' + byId[pair[1]].dept + ')' });
+      dot.appendChild(el('circle', { r: 3.1, fill: '#ffffff', opacity: .92 }));
       var am = el('animateMotion', { dur: '3.6s', repeatCount: 'indefinite', begin: (i * 0.32) + 's' });
       var mp = el('mpath'); mp.setAttribute('href', '#' + id);
       am.appendChild(mp); dot.appendChild(am); gPulse.appendChild(dot);
@@ -167,9 +262,18 @@
     DATA.nodes.forEach(function (n) {
       var p = pos[n.id], c = COLOR[n.dept], r = p.r;
       var g = el('g', { class: 'tdn-node', 'data-id': n.id, style: 'cursor:pointer' });
-      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: r + 9, fill: c, opacity: 0.14, filter: 'url(#tdn-soft)' }));
-      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: r, fill: '#0a1128', stroke: c, 'stroke-width': 2.4 }));
-      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: r * 0.42, fill: c, filter: 'url(#tdn-glow)' }));
+      /* 恒星：光晕 → 星芒 → 本体 → 白热核心 */
+      g.appendChild(el('circle', {
+        cx: p.x, cy: p.y, r: r * 5.4, fill: 'url(#tdn-halo-' + n.dept + ')',
+        opacity: 0.9, class: 'tdn-corona'
+      }));
+      g.appendChild(spikes(p.x, p.y, r * 4.3, r * 0.115, c, 0.46));
+      g.appendChild(el('circle', {
+        cx: p.x, cy: p.y, r: r, fill: '#061024', stroke: c,
+        'stroke-width': 1.6, 'stroke-opacity': .9
+      }));
+      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: r * 0.72, fill: 'url(#tdn-core-' + n.dept + ')' }));
+      g.appendChild(el('circle', { cx: p.x, cy: p.y, r: Math.max(2.2, r * 0.30), fill: '#ffffff' }));
       var cos = Math.cos(p.a), vertical = Math.abs(cos) < 0.34, anchor, lx, ly;
       if (vertical) { anchor = 'middle'; lx = p.x; ly = p.y < 0 ? p.y - r - 40 : p.y + r + 26; }
       else if (cos > 0) { anchor = 'start'; lx = p.x + r + 16; ly = p.y + 6; }
@@ -186,11 +290,28 @@
       gNode.appendChild(g); nodeEls[n.id] = g;
     });
 
-    var gc = el('g');
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#f8fafc', 'stroke-opacity': .38, 'stroke-width': 1.4 }));
-    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: '#f8fafc', opacity: .13, filter: 'url(#tdn-glow)' }));
+    var gc = el('g', { class: 'tdn-core' });
+    /* 外层大光晕（辐射宇宙的观感主要来自这一层） */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 300, fill: 'url(#tdn-halo)', opacity: .85 }));
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 170, fill: 'url(#tdn-halo)', opacity: .95 }));
+    /* 光芒：长短相间，缓慢自转 */
+    var rays = el('g', { class: 'tdn-rays' });
+    for (var ri = 0; ri < 16; ri++) {
+      var ra = ri * Math.PI / 8, inner = 82, outer = (ri % 2 ? 168 : 258);
+      rays.appendChild(el('line', {
+        x1: (Math.cos(ra) * inner).toFixed(1), y1: (Math.sin(ra) * inner).toFixed(1),
+        x2: (Math.cos(ra) * outer).toFixed(1), y2: (Math.sin(ra) * outer).toFixed(1),
+        stroke: '#cfe0ff', 'stroke-opacity': (ri % 2 ? 0.06 : 0.14),
+        'stroke-width': (ri % 2 ? 1.2 : 1.9), 'stroke-linecap': 'round'
+      }));
+    }
+    gc.appendChild(rays);
+    /* 环与核心 */
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 74, fill: 'none', stroke: '#eaf1ff', 'stroke-opacity': .30, 'stroke-width': 1.4, 'stroke-dasharray': '2 7' }));
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#f8fafc', 'stroke-opacity': .52, 'stroke-width': 1.6 }));
+    gc.appendChild(el('circle', { cx: 0, cy: 0, r: 50, fill: 'url(#tdn-halo)' }));
     gc.appendChild(tx(0, 16, '道', {
-      fill: '#f8fafc', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
+      fill: '#ffffff', 'font-size': 56, 'font-weight': 700, 'text-anchor': 'middle', filter: 'url(#tdn-glow)'
     }));
     gNode.appendChild(gc);
 
@@ -304,9 +425,17 @@
       var set = {}; (ids || []).forEach(function (i) { set[i] = 1; });
       var on = Object.keys(set).length > 0;
       DATA.nodes.forEach(function (n) { ctx.nodeEls[n.id].style.opacity = (!on || set[n.id]) ? 1 : 0.12; });
-      Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path'), function (p) {
-        var s = p.getAttribute('data-rad').split('|');
+      /* 注意：只取带 data-rad 的路径。辐射组里还叠着一层柔光（data-rad-glow），
+         若一并取来，它的 data-rad 为空，split 会抛错。 */
+      Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad]'), function (p) {
+        var a = p.getAttribute('data-rad'); if (!a) return;
+        var s = a.split('|');
         p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.8 : 0.04);
+      });
+      Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
+        var a = p.getAttribute('data-rad-glow'); if (!a) return;
+        var s = a.split('|');
+        p.setAttribute('stroke-opacity', (!on || set[s[0]] || set[s[1]]) ? 0.30 : 0.02);
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);

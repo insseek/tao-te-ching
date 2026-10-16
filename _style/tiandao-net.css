@@ -270,3 +270,27 @@ body.tdn-rot-on { overflow: hidden; }
    旋转后它与固定定位的横屏按钮落在同一角，会互相掩盖。
    抽屉是阅读态，此时本就不需要横竖屏切换。 */
 body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: scale(.88); }
+
+/* ===== 星图动画 =====
+   只在少数整层元素上做动画（不是逐个星点），避免移动端掉帧。 */
+@keyframes tdn-twinkle { 0%, 100% { opacity: .62 } 50% { opacity: 1 } }
+@keyframes tdn-spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+@keyframes tdn-breathe {
+  0%, 100% { opacity: .88; }
+  50%      { opacity: 1; }
+}
+.tdn-tw-1 { animation: tdn-twinkle 7.5s ease-in-out infinite; }
+.tdn-tw-2 { animation: tdn-twinkle 5.2s ease-in-out infinite .9s; }
+.tdn-tw-3 { animation: tdn-twinkle 3.6s ease-in-out infinite .4s; }
+.tdn-tw-4 { animation: tdn-twinkle 4.8s ease-in-out infinite 1.3s; }
+/* 中央光芒：以 viewBox 中心为轴缓慢自转 */
+.tdn-rays {
+  transform-box: view-box; transform-origin: 50% 50%;
+  animation: tdn-spin 200s linear infinite;
+}
+.tdn-core { animation: tdn-breathe 9s ease-in-out infinite; }
+.tdn-neb  { animation: tdn-breathe 26s ease-in-out infinite; }
+/* 尊重系统的「减弱动态效果」 */
+@media (prefers-reduced-motion: reduce) {
+  .tdn-stars, .tdn-rays, .tdn-core, .tdn-neb, .tdn-node { animation: none !important; }
+}
