@@ -208,26 +208,58 @@ body.tdn-compact .tdn-readout { display: none; }
 .tdn-chip.tdn-all.on { color: #06122b; border-style: solid;
   background: linear-gradient(135deg, #9ec5ff, #d9b8ff); }
 
-/* ===== 竖屏手机：一键横屏（CSS 旋转，兼容 iOS／微信）===== */
+/* ===== 竖屏手机：一键横屏（CSS 旋转，兼容 iOS／微信） =====
+   按钮样式对齐主流手机站：右下角、毛玻璃胶囊、图标＋短标签、
+   含 iPhone 安全区内边距；只在竖屏出现。
+   按钮在 .tdn-wrap 之外，故旋转时它自身不转，始终停在屏幕右下。 */
 .tdn-rot { display: none; }
 @media (orientation: portrait) {
   .tdn-rot {
-    display: block; position: fixed; right: 12px; top: 12px; z-index: 60;
+    display: inline-flex; align-items: center; gap: 7px;
+    position: fixed; z-index: 60;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    height: 38px; padding: 0 15px 0 12px;
+    border: 0; border-radius: 999px; cursor: pointer;
     font: 600 13px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    color: #cfe0ff; padding: 8px 14px; border-radius: 999px; cursor: pointer;
-    background: rgba(12,20,44,.82); border: 1px solid rgba(120,160,255,.45);
-    backdrop-filter: blur(10px);
+    letter-spacing: .04em; color: #eaf1ff;
+    background: rgba(38,52,86,.90);   /* 页面底色近黑（#04060f），
+                                         按钮必须比它明显亮，否则深色叠深色等于隐身 */
+    box-shadow: 0 8px 24px -6px rgba(0,0,0,.7),
+                0 0 20px -8px rgba(96,148,255,.95),
+                inset 0 0 0 1px rgba(150,190,255,.30);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    transition: transform .16s ease, background .16s ease;
+    -webkit-tap-highlight-color: transparent;
   }
+  .tdn-rot:active { transform: scale(.94); background: rgba(58,78,124,.95); }
+  .tdn-rot svg { width: 17px; height: 17px; display: block; flex: none; }
 }
+
+/* 旋转本体：仅在竖屏启用。
+   手机若未锁方向，用户转过去后浏览器报横屏，此规则自动失效，不会双重旋转。 */
 @media (orientation: portrait) {
   body.tdn-rot-on .tdn-wrap {
-    position: fixed; top: 50%; left: 50%;
+    inset: auto;                 /* 清掉基类的 inset: 0 */
+    position: fixed;
+    top: 50%; left: 50%;
     width: 100vh; height: 100vw;
     transform: translate(-50%, -50%) rotate(90deg);
     transform-origin: center center;
   }
 }
 body.tdn-rot-on { overflow: hidden; }
-/* 旋转后，返回键移到视觉左上，避免与图重叠 */
-body.tdn-rot-on .tdn-back { left: auto; right: 12px; bottom: 12px; }
-body.tdn-rot-on .tdn-rot { left: 12px; right: auto; }
+
+/* ===== 窄屏（手机竖屏、未旋转）底部整理 =====
+   竖屏底部同时有：返回链接（左下）、开关组（居中）、横屏按钮（右下），
+   390px 宽会互相压。给开关组留出下方空间，并把评说框撑满。 */
+@media (max-width: 780px) {
+  body.tdn-standalone:not(.tdn-compact) .tdn-toggles { padding-bottom: 56px; }
+  body.tdn-standalone .tdn-readout {
+    width: calc(100% - 28px);
+    bottom: 104px;
+    font-size: 12.5px; line-height: 1.75;
+  }
+  .tdn-back { font-size: 12px; padding: 6px 12px; }
+}
