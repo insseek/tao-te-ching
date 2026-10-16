@@ -10,14 +10,19 @@
      这里不写死任何一份副本——副本就是漂移的源头。
      约定（由 00.md 的标记本身定义，缺一不可）：
        ## 一、道生万物（宇宙起源）      部标题：序号、部名
-       ### B3　道隐无名（不彰显）        组标题：组号、组名（分隔符全角空格，也容忍半角）
+       ### B3、道隐无名（不彰显）        组标题：组号、组名（分隔符顿号，也容忍空格）
        道源：A1　道生万物；B1　道法自然   该组的道源（旧写法「道源正行：」也认）
        > 原文……（四十二）              引文行：句数按行计，章号取句末括注
        里探评说：……                    该组评说（88.md 与抽屉用）
      ============================================================ */
+  /* docsify 对标题的 slug：整串小写，空白（半角/全角）转连字符，其余字符保留。
+     例：### A1、道生万物 → id="a1、道生万物"
+         ### B3　道隐无名（不彰显） → id="b3-道隐无名（不彰显）" */
+  function slugify(s) { return String(s).toLowerCase().replace(/[\s\u3000]+/g, '-'); }
+
   function parse00(text) {
     var lines = String(text).split('\n');
-    var depts = [], nodes = [], order = [], curDept = null, cur = null;
+    var depts = [], nodes = [], order = [], curDept = null, cur = null, warn = [];
     lines.forEach(function (l) {
       var m;
       if ((m = /^##\s+(.+)$/.exec(l))) {
@@ -28,15 +33,22 @@
         cur = null;
         return;
       }
-      if ((m = /^###\s+([A-D]\d+)[\s\u3000]+(.+)$/.exec(l))) {
+      /* 组标题：分隔符规范是顿号「、」（与部标题、组内小节一致），
+         也容忍全角/半角空格。 */
+      if ((m = /^###\s+([A-D]\d+)([、\s\u3000]+)(.+)$/.exec(l))) {
+        if (m[2] !== '、') warn.push('组标题分隔符不是「、」：' + m[1] + '（当前用 ' + JSON.stringify(m[2]) + '）');
         cur = {
-          id: m[1], name: m[2].trim(), dept: curDept ? curDept.key : '',
+          id: m[1], name: m[3].trim(), dept: curDept ? curDept.key : '',
+          /* 标题原文与它的锚点：锚点必须与 docsify 对该标题的 slug 一致，
+             否则抽屉里「在新编中阅读」的跳转会落空。 */
+          head: m[1] + m[2] + m[3],
+          anchor: slugify(m[1] + m[2] + m[3]),
           chs: [], n: 0, from: [], ps: []
         };
         nodes.push(cur); order.push(cur.id);
         return;
       }
-      if (/^###\s/.test(l)) { cur = null; return; }
+      if (/^###\s/.test(l)) { cur = null; return; }   /* 非组标题的 ### 小节 */
       if (!cur) return;
       if (l.indexOf('> ') === 0) {
         cur.n += 1;
@@ -89,7 +101,7 @@
 
     return {
       depts: depts, nodes: nodes, order: order, byKey: byKey,
-      radial: radial, to: to, gen: gen, root: root
+      radial: radial, to: to, gen: gen, root: root, warn: warn
     };
   }
   window.__tdnParse00 = parse00;   /* 供验证脚本直接调用 */
@@ -140,9 +152,7 @@
   /* docsify 的标题锚点规则：整串转小写、去掉全角空格「　」、半角空格转连字符。
      例：### D2　无为而治：无事、希言  →  id="d2-无为而治：无事、希言"
      这就是抽屉里「在新编中阅读」跳过去时用来定位的锚点。 */
-  function anchorOf(id, name) {
-    return (id + '-' + name).toLowerCase().replace(/\u3000/g, '').replace(/ /g, '-');
-  }
+  function anchorOf(n) { return n.anchor; }
 
   /* 节点/提示显示组名时去掉（…）括注，短而清楚 */
   function dispName(s) { return String(s).replace(/（[^）]*）/g, '').trim(); }
@@ -686,7 +696,7 @@
         body.innerHTML =
           '<h4>原文 · 评说</h4>' + vh +
           relHTML +
-          '<a class="tdn-goto" href="index.html#/00?id=' + anchorOf(id, n.name) + '">' +
+          '<a class="tdn-goto" href="index.html#/00?id=' + anchorOf(n) + '">' +
             '在《里探《道德经》新编》中阅读 →</a>';
         Array.prototype.forEach.call(body.querySelectorAll('.tdn-jump'), function (b) {
           b.onclick = function () { open(b.getAttribute('data-id')); };

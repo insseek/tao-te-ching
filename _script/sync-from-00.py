@@ -59,13 +59,14 @@ def parse_00():
             depts.append((curdept, []))
             cur = None
             continue
-        # 组标题：分隔符规范是全角空格「　」，但也容忍半角空格（并报警）。
+        # 组标题：分隔符规范是顿号「、」（与部标题、组内小节一致），
+    # 也容忍全角/半角空格（并报警）。
         # 曾因只认全角，把 `### C6 无之以为用（…）` 整组静默丢掉。
-        m = re.match(r'^### ([A-D]\d+)([　\s]+)(.+)$', l)
+        m = re.match(r'^### ([A-D]\d+)([、　\s]+)(.+)$', l)
         if m:
             cur = m.group(1)
-            if m.group(2) != '\u3000':
-                warn.append('组标题分隔符不是全角空格：%s（当前用 %r）'
+            if m.group(2) != '、':
+                warn.append('组标题分隔符不是顿号「、」：%s（当前用 %r）'
                             % (cur, m.group(2)))
             names[cur] = m.group(3).strip()
             dept_of[cur] = curdept
