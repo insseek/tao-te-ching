@@ -5,20 +5,129 @@
    点节点即读原文、评说与牵连；顺着连线可走遍全网。
    ============================================================ */
 (function () {
-  var DATA = {"depts": [{"key": "一", "name": "道生万物论（宇宙起源）"}, {"key": "二", "name": "道的属性和规律（自然规律）"}, {"key": "三", "name": "修身成圣（尊道不争）"}, {"key": "四", "name": "治国取天下（尊道无为）"}], "nodes": [{"id": "A1", "name": "道生万物", "dept": "一", "chs": [1, 4, 6, 25, 40, 42, 51, 52], "n": 13}, {"id": "B1", "name": "道法自然", "dept": "二", "chs": [6, 7, 14, 16, 21, 25, 34, 37, 39, 40, 58], "n": 11}, {"id": "B2", "name": "道冲（中空虚无，似或存）", "dept": "二", "chs": [4, 5, 14, 21, 25, 45], "n": 6}, {"id": "B3", "name": "道隐无名（不彰显）", "dept": "二", "chs": [32, 41, 45, 67, 78], "n": 4}, {"id": "B4", "name": "玄德（生而不有，养而不为主，利而不害）", "dept": "二", "chs": [2, 8, 10, 21, 34, 41, 51, 81], "n": 8}, {"id": "B5", "name": "玄同（包容，无相）", "dept": "二", "chs": [5, 32, 56, 62, 79], "n": 6}, {"id": "B6", "name": "弱者道之用（由下向上）", "dept": "二", "chs": [2, 22, 26, 32, 36, 39, 40, 43, 45, 61, 64, 66, 73, 76, 78], "n": 20}, {"id": "B7", "name": "满招损（由上向下）", "dept": "二", "chs": [9, 12, 23, 24, 30, 42, 77], "n": 10}, {"id": "C1", "name": "守道抱一", "dept": "三", "chs": [10, 15, 20, 23, 33, 41, 52, 53, 54, 70], "n": 20}, {"id": "C2", "name": "知常全生", "dept": "三", "chs": [16, 33, 50, 52, 55, 56, 71, 72, 81], "n": 17}, {"id": "C3", "name": "常善救人", "dept": "三", "chs": [27, 49, 79], "n": 6}, {"id": "C4", "name": "知足知止", "dept": "三", "chs": [15, 24, 29, 32, 42, 44, 46, 47, 52, 53, 58, 77], "n": 14}, {"id": "C5", "name": "不争之德（柔弱胜刚强）", "dept": "三", "chs": [7, 22, 28, 63, 67, 68], "n": 13}, {"id": "C6", "name": "无之以为用（善行无辙迹）", "dept": "三", "chs": [11, 27], "n": 2}, {"id": "D1", "name": "守道不失", "dept": "四", "chs": [25, 32, 59, 62], "n": 4}, {"id": "D2", "name": "无为而治（贵身，无事、希言）", "dept": "四", "chs": [2, 5, 10, 13, 17, 23, 29, 35, 37, 43, 48, 57, 58, 60, 64, 75], "n": 23}, {"id": "D3", "name": "不崇德尚贤", "dept": "四", "chs": [3, 18, 19, 38], "n": 8}, {"id": "D4", "name": "愚民", "dept": "四", "chs": [3, 12, 65], "n": 5}, {"id": "D5", "name": "小国寡民", "dept": "四", "chs": [80], "n": 1}, {"id": "D6", "name": "谦下之德（柔弱胜刚强）", "dept": "四", "chs": [26, 36, 39, 42, 61, 66, 78], "n": 10}, {"id": "D7", "name": "不用威滥杀", "dept": "四", "chs": [72, 74], "n": 3}, {"id": "D8", "name": "不以兵强天下（不得已而用）", "dept": "四", "chs": [30, 31, 46, 69], "n": 8}], "radial": [["A1", "B1"], ["A1", "B2"], ["A1", "B3"], ["A1", "B4"], ["A1", "B5"], ["A1", "B6"], ["A1", "B7"], ["A1", "C1"], ["A1", "D1"], ["B1", "C1"], ["B1", "C2"], ["B1", "D1"], ["B1", "D2"], ["B2", "C2"], ["B2", "C6"], ["B2", "D2"], ["B3", "C1"], ["B3", "C6"], ["B3", "D3"], ["B4", "C3"], ["B4", "C5"], ["B4", "D2"], ["B4", "D7"], ["B4", "D8"], ["B5", "C1"], ["B5", "C2"], ["B5", "C3"], ["B6", "C2"], ["B6", "C5"], ["B6", "D6"], ["B6", "D8"], ["B7", "C4"], ["B7", "D4"], ["B7", "D5"], ["B7", "D6"], ["B7", "D7"], ["B7", "D8"]], "chord": [{"a": "B6", "b": "D6", "w": 6, "chs": [26, 36, 39, 61, 66, 78]}, {"a": "A1", "b": "B1", "w": 3, "chs": [6, 25, 40]}, {"a": "B1", "b": "B2", "w": 3, "chs": [14, 21, 25]}, {"a": "B3", "b": "B6", "w": 3, "chs": [32, 45, 78]}, {"a": "B6", "b": "D2", "w": 3, "chs": [2, 43, 64]}, {"a": "B7", "b": "C4", "w": 3, "chs": [24, 42, 77]}, {"a": "C1", "b": "C4", "w": 3, "chs": [15, 52, 53]}, {"a": "A1", "b": "B2", "w": 2, "chs": [4, 25]}, {"a": "A1", "b": "C4", "w": 2, "chs": [42, 52]}, {"a": "B1", "b": "B4", "w": 2, "chs": [21, 34]}, {"a": "B1", "b": "B6", "w": 2, "chs": [39, 40]}, {"a": "B1", "b": "D2", "w": 2, "chs": [37, 58]}, {"a": "B4", "b": "C1", "w": 2, "chs": [10, 41]}, {"a": "B4", "b": "D2", "w": 2, "chs": [2, 10]}, {"a": "B5", "b": "D1", "w": 2, "chs": [32, 62]}, {"a": "C1", "b": "C2", "w": 2, "chs": [33, 52]}, {"a": "C1", "b": "D2", "w": 2, "chs": [10, 23]}, {"a": "C4", "b": "D2", "w": 2, "chs": [29, 58]}], "core": {}};
+  /* ============================================================
+     数据只有 00.md 一个来源：部、组、收录章、句数、道源，全部现场解析。
+     这里不写死任何一份副本——副本就是漂移的源头。
+     约定（由 00.md 的标记本身定义，缺一不可）：
+       ## 一、道生万物（宇宙起源）      部标题：序号、部名
+       ### B3　道隐无名（不彰显）        组标题：组号、组名（分隔符全角空格，也容忍半角）
+       道源：A1　道生万物；B1　道法自然   该组的道源（旧写法「道源正行：」也认）
+       > 原文……（四十二）              引文行：句数按行计，章号取句末括注
+       里探评说：……                    该组评说（88.md 与抽屉用）
+     ============================================================ */
+  function parse00(text) {
+    var lines = String(text).split('\n');
+    var depts = [], nodes = [], order = [], curDept = null, cur = null;
+    lines.forEach(function (l) {
+      var m;
+      if ((m = /^##\s+(.+)$/.exec(l))) {
+        var raw = m[1].trim();
+        var k = /^([一二三四五六七八九十]+)、/.exec(raw);
+        curDept = { key: k ? k[1] : '', name: raw.replace(/^[一二三四五六七八九十]+、/, '').trim() };
+        depts.push(curDept);
+        cur = null;
+        return;
+      }
+      if ((m = /^###\s+([A-D]\d+)[\s\u3000]+(.+)$/.exec(l))) {
+        cur = {
+          id: m[1], name: m[2].trim(), dept: curDept ? curDept.key : '',
+          chs: [], n: 0, from: [], ps: []
+        };
+        nodes.push(cur); order.push(cur.id);
+        return;
+      }
+      if (/^###\s/.test(l)) { cur = null; return; }
+      if (!cur) return;
+      if (l.indexOf('> ') === 0) {
+        cur.n += 1;
+        var re = /（([一二三四五六七八九十]+)）/g, mm;
+        while ((mm = re.exec(l))) {
+          var v = cn2num(mm[1]);
+          if (cur.chs.indexOf(v) < 0) cur.chs.push(v);
+        }
+        return;
+      }
+      if ((m = /^道源(?:正行)?：(.+)$/.exec(l.trim()))) {
+        cur.from = m[1].match(/[A-D]\d+/g) || [];
+        return;
+      }
+      if (l.indexOf('里探评说：') === 0) cur.ps.push(l.slice(5).trim());
+    });
+
+    /* ---- 以下全部由上面解析出的东西导出，不再另设来源 ---- */
+    /* 只保留真正含组的部：00.md 里的「## 前言」这类小节不算部 */
+    var usedDept = {};
+    nodes.forEach(function (n) { usedDept[n.dept] = 1; });
+    depts = depts.filter(function (d) { return usedDept[d.key]; });
+
+    var byKey = {};
+    nodes.forEach(function (n) {
+      n.chs.sort(function (a, b) { return a - b; });
+      byKey[n.id] = n;
+    });
+
+    /* 源→用：道源写的方向是"我出自谁"，画到图上取反（源头指向应用） */
+    var radial = [];
+    nodes.forEach(function (n) {
+      n.from.forEach(function (f) { if (byKey[f]) radial.push([f, n.id]); });
+    });
+    radial.sort();
+
+    /* 下游（谁以我为源）与代数（离根几步） */
+    var to = {}, gen = {};
+    nodes.forEach(function (n) {
+      to[n.id] = radial.filter(function (e) { return e[0] === n.id; }).map(function (e) { return e[1]; });
+    });
+    var root = nodes.filter(function (n) { return !n.from.length; }).map(function (n) { return n.id; });
+    (function () {
+      order.forEach(function (id) { gen[id] = 99; });
+      root.forEach(function (id) { gen[id] = 0; });
+      for (var k = 0; k < nodes.length; k++) {
+        radial.forEach(function (e) { if (gen[e[1]] > gen[e[0]] + 1) gen[e[1]] = gen[e[0]] + 1; });
+      }
+    })();
+
+    /* 共章弦：两组收录章交集 ≥2 章 */
+    var chord = [];
+    for (var i = 0; i < order.length; i++) {
+      for (var j = i + 1; j < order.length; j++) {
+        var A = byKey[order[i]], B = byKey[order[j]];
+        var sh = A.chs.filter(function (c) { return B.chs.indexOf(c) >= 0; });
+        if (sh.length >= 2) chord.push({ a: A.id, b: B.id, w: sh.length, chs: sh });
+      }
+    }
+    chord.sort(function (x, y) { return y.w - x.w || (x.a < y.a ? -1 : 1); });
+
+    return {
+      depts: depts, nodes: nodes, order: order, byKey: byKey,
+      radial: radial, to: to, gen: gen, root: root, chord: chord
+    };
+  }
+  window.__tdnParse00 = parse00;   /* 供验证脚本直接调用 */
+
+  /* DATA 由 parse00(00.md) 填入；未取到之前为 null */
+  var DATA = null;
 
   var COLOR = { '一': '#f6c453', '二': '#38bdf8', '三': '#34d399', '四': '#a78bfa' };
   /* 三环：A1「道生万物」即中央的「道」，不另设环 */
   var RING  = { '二': 318, '三': 458, '四': 598 };
   var NUM   = { '一': '一', '二': '二', '三': '三', '四': '四' };
   var SEQ   = { '一': '道生一', '二': '一生二', '三': '二生三', '四': '三生万物' };
-  var SHORT = { '一': '道生万物', '二': '道的属性和规律', '三': '修身成圣', '四': '治国取天下' };
+  var SHORT = {};   /* 部简称：由 00.md 的部标题导出，见 adoptData */
   var OFF   = { '一': 0, '二': Math.PI / 8, '三': 0, '四': Math.PI / 8 };
   var AX = 1.72, AY = 1.0;   /* 横向拉宽，铺满宽屏 */
   var NS = 'http://www.w3.org/2000/svg';
   var CN = { 零: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
   var byId = {};
-  DATA.nodes.forEach(function (n) { byId[n.id] = n; });
+  /* 上面这些是"呈现"常量（颜色、半径、角度偏移）。数据一律来自 00.md，
+     由 boot() 取回并 parse00() 解析后填入下面这个对象。 */
+  function adoptData(D) {
+    DATA = D;
+    byId = {};
+    DATA.nodes.forEach(function (n) { byId[n.id] = n; });
+    /* 部简称也从 00.md 的部标题导出（去掉（…））——不再另写一份 */
+    DATA.depts.forEach(function (d) { SHORT[d.key] = d.name.replace(/（[^）]*）/g, '').trim(); });
+  }
 
   function cn2num(s) {
     if (s === '十') return 10;
@@ -819,7 +928,19 @@
 
   function boot() {
     var host = document.getElementById('tiandao-net');
-    if (host && !host.dataset.built) { host.dataset.built = '1'; mount(host); }
+    if (!host || host.dataset.built) return;
+    host.dataset.built = '1';
+    /* 星图的全部数据取自 00.md 本身：现场取、现场解析，不存副本。 */
+    fetch('00.md', { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function (text) {
+      adoptData(parse00(text));
+      mount(host);
+    }).catch(function (err) {
+      host.innerHTML = '<p class="tdn-none">未能从 00.md 读取数据（' + err.message +
+        '）。天网的组、章、道源都取自 00.md，请确认它可访问。</p>';
+    });
   }
   window.__tdnBoot = boot;
   if (window.$docsify) {

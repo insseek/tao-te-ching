@@ -11,7 +11,7 @@
            表二 共章弦（两组收录章交集 ≥2 章）
            表三 章→组（出现在 3 组以上的章）
            承重句总表（各句现落在哪些组）
-  天网     DATA 的 nodes(name/chs/n)、radial（源→用）、chord（共章弦）
+  天网     不在此脚本内——页面运行时直接 fetch 00.md 并现场解析（见 tiandao-net.js 的 parse00）
   en.md    英文导览的组名对照
 
 用法：  python3 _script/sync-from-00.py [--check]
@@ -242,40 +242,6 @@ def sync_88(D, V):
     return t
 
 
-# ---------------------------------------------------------------- 天网 DATA
-def sync_net(D, V):
-    p = ROOT / '_script' / 'tiandao-net.js'
-    js = p.read_text(encoding='utf-8')
-    m = re.search(r'(var DATA = )(\{.*?\})(;\s*\n)', js, re.S)
-    data = json.loads(m.group(2))
-    # 先去掉 00.md 里已不存在的组；**再补上新增的组**——
-    # 只做过滤不补新增，新组就会整组缺席（C6 就这样漏了一版）。
-    data['nodes'] = [x for x in data['nodes'] if x['id'] in D['names']]
-    have = {x['id'] for x in data['nodes']}
-    for g in D['order']:
-        if g not in have:
-            data['nodes'].append({'id': g, 'name': D['names'][g],
-                                  'dept': D['dept_of'][g][0],
-                                  'chs': [], 'n': 0})
-    for x in data['nodes']:
-        g = x['id']
-        x['name'] = D['names'][g]
-        x['dept'] = D['dept_of'][g][0]
-        x['chs'] = sorted(D['chs'][g])
-        x['n'] = D['n'][g]
-    # 节点顺序按 00.md（部内次序），渲染与图例读起来才顺
-    idx = {g: i for i, g in enumerate(D['order'])}
-    data['nodes'].sort(key=lambda x: idx[x['id']])
-    data['radial'] = [[a, b] for a, b in V['edges']]
-    data['chord'] = [{'a': a, 'b': b, 'w': c, 'chs': s} for c, a, b, s in V['chords']]
-    data['core'] = {}
-    out = js[:m.start(2)] + json.dumps(data, ensure_ascii=False,
-                                       separators=(', ', ': ')) + js[m.end(2):]
-    if not CHECK:
-        p.write_text(out, encoding='utf-8')
-    return data
-
-
 # ---------------------------------------------------------------- en.md
 def sync_en(D):
     """整表重建英文导览的组表。
@@ -375,10 +341,9 @@ def main():
     for w in D.get('warn', []):
         print('  ⚠️  ' + w)
     sync_88(D, V)
-    sync_net(D, V)
     sync_en(D)
-    print('%s：88.md、_script/tiandao-net.js、en.md%s'
-          % ('仅检查' if CHECK else '已重建', '' if CHECK else '（98.md 请另跑 make-clean.py）'))
+    print('%s：88.md、en.md%s（天网已自行从 00.md 解析，无需同步）'
+          % ('仅检查' if CHECK else '已重建', '' if CHECK else '；98.md 请另跑 make-clean.py'))
 
 
 if __name__ == '__main__':
