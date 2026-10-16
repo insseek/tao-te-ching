@@ -357,9 +357,12 @@
       var R = RING[d], c = COLOR[d];
       gRing.appendChild(el('ellipse', {
         class: 'tdn-ring tdn-ring-' + di,
-        'data-dept': d, 'data-base': 0.26,
+        'data-dept': d, 'data-base': 0.42,
         cx: 0, cy: 0, rx: R * AX, ry: R * AY, fill: 'none', stroke: c,
-        'stroke-opacity': 0.26, 'stroke-width': 1.4, 'stroke-dasharray': '3 9'
+        /* 线宽是 viewBox 单位：画布 2760 宽、屏幕约 1500，缩放 ~0.55，
+           故 1.6 只有 0.9 屏幕像素——是"看不见"的真正原因，不是透明度。
+           取 3 得约 1.6 屏幕像素；虚线由 3-8 加密到 4-6，画出的比例由 27% 升到 40%。 */
+        'stroke-opacity': 0.42, 'stroke-width': 3, 'stroke-dasharray': '4 6'
       }));
     });
 
@@ -557,7 +560,7 @@
        常态只是"若有若无"，全貌要看不清；但一进来就全亮又太吵。
        故取中间值：能看出网的走向，又不夺节点与中央。
        已有选中（tdn-sel）时让路——那时的亮暗由选中态决定。 */
-    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_RING = 0.5;
+    var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_RING = 0.62;
     var hoverOn = false;
     /* 线的「常态」不是一个定值，取决于鼠标在不在 D 环里。
        这三个函数是唯一的出处——highlight() 也必须走它们，
@@ -776,10 +779,10 @@
       /* 环：选部时只亮该部那一个，其余压暗；没选部则都回基准 */
       Array.prototype.forEach.call(ctx.svg.querySelectorAll('.tdn-ring'), function (r) {
         var base = +(r.getAttribute('data-base') || 0.26);
-        if (!dsel) { r.setAttribute('stroke-opacity', base); r.setAttribute('stroke-width', 1.4); return; }
+        if (!dsel) { r.setAttribute('stroke-opacity', base); r.setAttribute('stroke-width', 3); return; }
         var mine = r.getAttribute('data-dept') === dsel;
         r.setAttribute('stroke-opacity', mine ? 0.9 : 0.05);
-        r.setAttribute('stroke-width', mine ? 3 : 1.4);
+        r.setAttribute('stroke-width', mine ? 5 : 2.2);
       });
     }
 
