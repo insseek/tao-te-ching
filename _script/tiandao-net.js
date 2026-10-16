@@ -276,14 +276,14 @@
       var cx = mx + (-dy / len) * 30, cy = my + (dx / len) * 30, id = 'tdn-rad-' + i;
       var path = el('path', {
         id: id, d: 'M' + p.x + ',' + p.y + ' Q' + cx + ',' + cy + ' ' + q.x + ',' + q.y,
-        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.22,
-        'stroke-width': 1.6, 'data-rad': pair[0] + '|' + pair[1]
+        fill: 'none', stroke: COLOR[byId[pair[0]].dept], 'stroke-opacity': 0.09,
+        'stroke-width': 1.5, 'data-rad': pair[0] + '|' + pair[1]
       });
       var t = el('title'); t.textContent = pair[0] + ' → ' + pair[1]; path.appendChild(t);
       /* 底层柔光：同一条路径画粗、低透明度，做出光流质感（比模糊滤镜便宜） */
       gRadial.appendChild(el('path', {
         d: path.getAttribute('d'), fill: 'none', stroke: COLOR[byId[pair[0]].dept],
-        'stroke-opacity': 0.07, 'stroke-width': 6, 'stroke-linecap': 'round',
+        'stroke-opacity': 0.035, 'stroke-width': 5, 'stroke-linecap': 'round',
         'data-rad-glow': pair[0] + '|' + pair[1]
       }));
       gRadial.appendChild(path);
@@ -362,18 +362,31 @@
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 56, fill: 'none', stroke: '#dbe7ff', 'stroke-opacity': .34, 'stroke-width': 1.4 }));
     /* 核心只留一点微光：「似或存」 */
     gc.appendChild(el('circle', { cx: 0, cy: 0, r: 34, fill: 'url(#tdn-halo)', opacity: .30 }));
-    /* 中央两个字是全场焦点，做大做亮：渊是暗的，字必须跳出来 */
-    gc.appendChild(tx(0, 18, '道', {
-      fill: '#ffffff', 'font-size': 76, 'font-weight': 700, 'text-anchor': 'middle',
-      'fill-opacity': 1, filter: 'url(#tdn-glow)',
-      style: 'paint-order:stroke;stroke:#04060f;stroke-width:3'
+    /* 中央「道」：要与「渊」相称——衬线、微光、不刺眼，
+       两行整体（道 + 道生万物）居中于圆环，而不是各自偏下。 */
+    gc.appendChild(tx(0, -10, '道', {
+      fill: '#eaf1ff', 'font-size': 76, 'font-weight': 500, 'text-anchor': 'middle',
+      'fill-opacity': .94, filter: 'url(#tdn-glow)',
+      'font-family': '"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",Georgia,serif',
+      style: 'paint-order:stroke;stroke:#04060f;stroke-width:4'
     }));
     /* 中央即 A1「道生万物」——把组名写在道上，点它读该组原文 */
-    gc.appendChild(tx(0, 74, '道生万物', {
-      fill: '#cfe0ff', 'font-size': 27, 'font-weight': 700, 'text-anchor': 'middle',
-      'fill-opacity': .95, 'letter-spacing': 3,
-      style: 'paint-order:stroke;stroke:#04060f;stroke-width:3'
+    gc.appendChild(tx(0, 46, '道生万物', {
+      fill: '#c2d6f5', 'font-size': 26, 'font-weight': 500, 'text-anchor': 'middle',
+      'fill-opacity': .86, 'letter-spacing': 4,
+      'font-family': '"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",Georgia,serif',
+      style: 'paint-order:stroke;stroke:#04060f;stroke-width:4'
     }));
+    /* 环着深渊的四句状道之词：渊兮、湛兮、寂兮、独立。
+       极淡、衬线、贴着渊的边缘——要的是"看出来"而不是"读到"。 */
+    [['渊兮', -118, -78, 'end'], ['湛兮，似或存', 118, -78, 'start'],
+     ['寂兮寥兮', -118, 96, 'end'], ['独立不改', 118, 96, 'start']].forEach(function (q) {
+      gc.appendChild(tx(q[1], q[2], q[0], {
+        fill: '#9fb6dd', 'font-size': 23, 'font-weight': 400,
+        'text-anchor': q[3], 'fill-opacity': .40, 'letter-spacing': 2,
+        'font-family': '"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",Georgia,serif'
+      }));
+    });
     /* 交互圈：只有它接收指针事件。装饰用的大光晕若可命中，
        会盖住最内环的 A1 节点，真人点不到。 */
     var hit = el('circle', {

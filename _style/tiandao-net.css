@@ -399,3 +399,13 @@ body.tdn-drawer-open .tdn-rot { opacity: 0; pointer-events: none; transform: sca
 .tdn-svg.tdn-core-on .tdn-core text { fill-opacity: 1; }
 .tdn-svg.tdn-core-on .tdn-core circle { stroke-opacity: .72; }
 .tdn-svg.tdn-core-on .tdn-core { filter: brightness(1.45); }
+
+/* ===== 顶部分组选择：原贴住页面上端、字太小 ===== */
+body.tdn-standalone:not(.tdn-compact) .tdn-legend {
+  padding: 20px 18px 8px; gap: 12px 26px;
+}
+body.tdn-standalone:not(.tdn-compact) .tdn-legend .tdn-title { font-size: 17px; }
+body.tdn-standalone:not(.tdn-compact) .tdn-leg { font-size: 14px; padding: 8px 16px; }
+body.tdn-standalone:not(.tdn-compact) .tdn-leg i { font-size: 12px; opacity: .5; }
+/* 窄屏（含横屏紧凑模式）略收，但不再贴顶 */
+body.tdn-compact .tdn-legend { padding: 10px 12px 5px !important; }
