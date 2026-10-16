@@ -639,10 +639,22 @@
       /* 选部时，除该部本身，还要把它的"道源"一并显出来（但压暗一档）。
          依据就是 DATA.radial（源→用）：凡 u → v 且 v 属于该部，则 u 是它的源。
          二部的源只有道（A1），已由中央承担，故二部自然没有额外的上游节点。 */
-      var up = {};
+      var up = {}, nb = {};
       if (dOnly) {
         DATA.radial.forEach(function (pair) {
           if (set[pair[1]] && !set[pair[0]]) up[pair[0]] = 1;
+        });
+      } else if (on) {
+        /* 节点模式：把与选中节点有线相连的那些也点亮到半亮——
+           否则线是亮的，对面是谁却看不出来（用户指出的问题）。
+           源→用与共章弦都算相连。 */
+        DATA.radial.forEach(function (pair) {
+          if (set[pair[0]] && !set[pair[1]]) nb[pair[1]] = 1;
+          if (set[pair[1]] && !set[pair[0]]) nb[pair[0]] = 1;
+        });
+        DATA.chord.forEach(function (c) {
+          if (set[c.a] && !set[c.b]) nb[c.b] = 1;
+          if (set[c.b] && !set[c.a]) nb[c.a] = 1;
         });
       }
       DATA.nodes.forEach(function (n) {
@@ -653,9 +665,9 @@
           if (n.id === 'A1') ctx.svg.classList.toggle('tdn-core-on', !!(on && (set['A1'] || dOnly)));
           return;
         }
-        g.style.opacity = (!on || set[n.id]) ? 1 : (up[n.id] ? 0.62 : 0.12);
+        g.style.opacity = (!on || set[n.id]) ? 1 : ((up[n.id] || nb[n.id]) ? 0.62 : 0.12);
         /* 触屏没有 hover：选中的那颗要保持全亮，否则一直是暗星 */
-        g.classList.toggle('tdn-on', !!(on && set[n.id]));
+        g.classList.toggle('tdn-on', !!(on && (set[n.id] || nb[n.id])));
       });
       /* 注意：只取带 data-rad 的路径。辐射组里还叠着一层柔光（data-rad-glow），
          若一并取来，它的 data-rad 为空，split 会抛错。 */
