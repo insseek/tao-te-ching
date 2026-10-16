@@ -220,6 +220,14 @@
     gBright.setAttribute('class', 'tdn-stars tdn-tw-4');
     svg.appendChild(gFar); svg.appendChild(gMid); svg.appendChild(gNear); svg.appendChild(gBright);
 
+    /* 装饰层一律不接收指针事件。
+       否则「点图面空白 → 复位」会被星云与星点吞掉——
+       它们的填充即便近乎透明，visiblePainted 仍算命中，
+       于是 e.target 是 ellipse/circle 而不是 svg/rect，复位就不触发。 */
+    [gNeb, gFar, gMid, gNear, gBright].forEach(function (g) {
+      g.style.pointerEvents = 'none';
+    });
+
     var gRing = el('g'), gChord = el('g'), gRadial = el('g'), gPulse = el('g'), gNode = el('g');
     [gRing, gChord, gRadial, gPulse].forEach(function (g) { g.style.pointerEvents = 'none'; });
     [gRing, gChord, gRadial, gPulse, gNode].forEach(function (g) { svg.appendChild(g); });
