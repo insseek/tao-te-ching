@@ -56,14 +56,14 @@ Glosses are deliberately short — they point, they do not translate.
 | **C2** 知常全生 | Knowing the constant, living out one's years | |
 | **C3** 知足知止 | Knowing contentment, knowing when to stop | |
 | **C4** 常善救人 | Always able to save people — no one discarded | |
-| **C5** 不争之得 | The gain of not contending | |
+| **C5** 不争之德  | The gain of not contending | |
 | **D1** 守道不失 | Holding the Dao without losing it | |
 | **D2** 无为而治 | Ruling by non-action: no busyness, few words | |
 | **D3** 不崇德尚贤 | Not exalting virtue or worthies | |
 | **D4** 愚民 | Keeping the people simple | |
 | **D5** 小国寡民 | A small state with few people | |
-| **D6** 谦下之得 | The gain of humility — the soft overcoming the hard | |
-| **D7** 不滥杀、不用威 | Not killing wantonly, not ruling by fear | |
+| **D6** 谦下之德  | The gain of humility — the soft overcoming the hard | |
+| **D7** 不用威滥杀  | Not killing wantonly, not ruling by fear | |
 | **D8** 不以兵强天下 | Not forcing the world by arms | |
 
 ## A note on originality
