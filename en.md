@@ -30,7 +30,7 @@ An interactive map. **The Dao at the centre** — the centre *is* the group A1 (
 
 | | Chinese | Meaning |
 |---|---|---|
-| **I** | 一、道生万物论（宇宙起源） | The Dao gives birth to all things — cosmology |
+| **I** | 一、道生万物（宇宙起源） | The Dao gives birth to all things — cosmology |
 | **II** | 二、道的属性和规律（自然规律） | The attributes and patterns of the Dao — natural law |
 | **III** | 三、修身成圣（尊道不争） | Cultivating oneself — following the Dao, not contending |
 | **IV** | 四、治国取天下（尊道无为） | Governing — ruling by non-action |

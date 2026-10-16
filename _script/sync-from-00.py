@@ -87,7 +87,8 @@ def parse_00():
         elif l.startswith('里探评说：'):
             ps[cur].append(l[len('里探评说：'):].strip())
         else:
-            m2 = re.match(r'^道源正行：(.+)$', l.strip())
+            # 标注行的写法：现为「道源：」，旧版为「道源正行：」，两种都认
+            m2 = re.match(r'^道源(?:正行)?：(.+)$', l.strip())
             if m2:
                 src[cur] = re.findall(r'([A-D]\d+)', m2.group(1))
     depts = [(d, gs) for d, gs in depts if gs]
