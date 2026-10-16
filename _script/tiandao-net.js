@@ -459,17 +459,23 @@
        已有选中（tdn-sel）时让路——那时的亮暗由选中态决定。 */
     var HOVER_LINE = 0.45, HOVER_GLOW = 0.18, HOVER_CHORD = 0.45;
     var hoverOn = false;
-    function hoverWeb(level) {
+    /* 线的「常态」不是一个定值，取决于鼠标在不在 D 环里。
+       这三个函数是唯一的出处——highlight() 也必须走它们，
+       否则离开节点时 highlight(null) 会按"图外常态"写回，
+       把还在圈内的中间态抹掉（这是曾经的 bug）。 */
+    function baseRad() { return hoverOn ? HOVER_LINE : 0.18; }
+    function baseGlow() { return hoverOn ? HOVER_GLOW : 0.07; }
+    function baseChord(b) { return hoverOn ? Math.min(b * 1.9, HOVER_CHORD) : b; }
+    function hoverWeb() {
       if (svg.classList.contains('tdn-sel')) return;
       Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad]'), function (p) {
-        p.setAttribute('stroke-opacity', level ? HOVER_LINE : 0.18);
+        p.setAttribute('stroke-opacity', baseRad());
       });
       Array.prototype.forEach.call(gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
-        p.setAttribute('stroke-opacity', level ? HOVER_GLOW : 0.07);
+        p.setAttribute('stroke-opacity', baseGlow());
       });
       Array.prototype.forEach.call(gChord.querySelectorAll('path'), function (p) {
-        var b = +(p.getAttribute('data-base') || 0.1);
-        p.setAttribute('stroke-opacity', level ? Math.min(b * 1.9, HOVER_CHORD) : b);
+        p.setAttribute('stroke-opacity', baseChord(+(p.getAttribute('data-base') || 0.1)));
       });
     }
     /* D 环是椭圆（rx = R×AX，ry = R×AY），按椭圆方程判"圈内" */
@@ -483,11 +489,12 @@
     }
     stage.addEventListener('mousemove', function (e) {
       var inside = inD(e);
+      svg.dataset.hover = inside ? '1' : '0';   /* 状态标记，便于排查 */
       if (inside === hoverOn) return;
-      hoverOn = inside; hoverWeb(inside);
+      hoverOn = inside; hoverWeb();
     });
     stage.addEventListener('mouseleave', function () {
-      if (hoverOn) { hoverOn = false; hoverWeb(false); }
+      if (hoverOn) { hoverOn = false; hoverWeb(); }
     });
 
     host.appendChild(stage);
@@ -496,7 +503,9 @@
     API = {
       svg: svg, stage: stage, nodeEls: nodeEls,
       gChord: gChord, gRadial: gRadial, gPulse: gPulse,
-      onCoreClick: null
+      onCoreClick: null,
+      /* 供 highlight() 取"当前常态值"——随鼠标是否在 D 环内而变 */
+      baseRad: baseRad, baseGlow: baseGlow, baseChord: baseChord
     };
     return API;
   }
@@ -626,20 +635,20 @@
         /* 无选中 → 回到极淡的常态（与 DATA 里的默认值一致）；
            有选中 → 只亮该组相关的，其余更淡。 */
         var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? 0.18 : (lit ? 0.92 : 0.02));
+        p.setAttribute('stroke-opacity', !on ? ctx.baseRad() : (lit ? 0.92 : 0.02));
       });
       Array.prototype.forEach.call(ctx.gRadial.querySelectorAll('path[data-rad-glow]'), function (p) {
         var a = p.getAttribute('data-rad-glow'); if (!a) return;
         var s = a.split('|');
         var lit = on && (set[s[0]] || set[s[1]]);
-        p.setAttribute('stroke-opacity', !on ? 0.07 : (lit ? 0.40 : 0.01));
+        p.setAttribute('stroke-opacity', !on ? ctx.baseGlow() : (lit ? 0.40 : 0.01));
       });
       Array.prototype.forEach.call(ctx.gChord.querySelectorAll('path'), function (p) {
         var s = p.getAttribute('data-chord').split('|'), b = +(p.getAttribute('data-base') || 0.1);
         var lit = on && (set[s[0]] || set[s[1]]);
-        /* 无选中 → 回到它自己的淡底 b（与属性里的默认值一致）；
+        /* 无选中 → 回到常态（细弦按自己的权重，且随鼠标是否在 D 环内变档）；
            有选中 → 相关的弦提亮，其余压到几乎不见。 */
-        p.setAttribute('stroke-opacity', !on ? b : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
+        p.setAttribute('stroke-opacity', !on ? ctx.baseChord(b) : (lit ? Math.min(b * 2.6, 0.85) : 0.012));
       });
     }
 
