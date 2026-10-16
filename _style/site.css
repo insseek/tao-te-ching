@@ -1,6 +1,6 @@
 /* 站点通用样式（docsify 阅读页） */
 
-/* 天道大网入口 */
+/* 天网恢恢入口 */
 #tdn-entry {
   position: fixed; top: 14px; right: 16px; z-index: 60;
   display: inline-flex; align-items: center; gap: 8px;
@@ -58,3 +58,22 @@ body[data-page="/00.md"] .markdown-section blockquote + p { }
 body:not([data-page="/en.md"]) #tdn-lang a.zh { display: none; }
 body[data-page="/en.md"] #tdn-lang a.en { display: none; }
 @media (max-width: 780px) { #tdn-lang { right: 12px; bottom: 12px; } }
+
+/* ===== 手机阅读 ===== */
+@media (max-width: 780px) {
+  /* docsify 默认 max-width: calc(100% - 90px)，手机上一行只剩 300px，太窄 */
+  .markdown-section {
+    max-width: calc(100% - 32px); margin: 0 16px;
+    padding: 6px 0 84px; font-size: 15.5px; line-height: 1.9;
+  }
+  .markdown-section h1 { font-size: 1.5em; line-height: 1.35; }
+  .markdown-section h2 { font-size: 1.24em; }
+  .markdown-section h3 { font-size: 1.08em; }
+  /* 表格、代码块横向滚动，不撑破版面 */
+  .markdown-section table { display: block; overflow-x: auto; font-size: 13px; }
+  .markdown-section pre { font-size: 12.5px; }
+  body[data-page="/00.md"] .markdown-section blockquote { --blockquote-padding: 0.15em 0 0.15em .85em; }
+  /* 天网入口移到右下（避让标题，也便于拇指）；语言切换移到左下 */
+  #tdn-entry { top: auto; bottom: 16px; right: 14px; }
+  #tdn-lang { right: auto; left: 14px; bottom: 20px; }
+}

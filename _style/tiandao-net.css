@@ -1,4 +1,4 @@
-/* 天道大网 · 关系图 */
+/* 天网恢恢 · 关系图 */
 .tdn-wrap {
   position: relative; margin: 1.2rem 0 2rem; padding: 10px;
   border-radius: 18px; overflow: hidden;
@@ -47,7 +47,7 @@
 .tdn-tag { display: inline-block; margin: 2px 5px 0 0; padding: 1px 9px;
   border: 1px solid; border-radius: 999px; font-size: 12.5px; }
 
-/* 天道大网页：内容栏加宽（其他页不受影响） */
+/* 天网恢恢页：内容栏加宽（其他页不受影响） */
 .content.tdn-wide .markdown-section {
   --content-max-width: 86rem;
   max-width: calc(100% - 2rem);
@@ -126,7 +126,7 @@
 .tdn-ps p:last-child { margin-bottom: 0; }
 
 /* ===== 独立全屏页 ===== */
-html:has(body.tdn-standalone) { height: 100%; }
+html.tdn-html { height: 100%; }   /* 不用 :has()，兼容老版微信 WebView */
 body.tdn-standalone { margin: 0; height: 100vh; overflow: hidden; background: #04060f; }
 body.tdn-standalone .tdn-wrap {
   position: fixed; inset: 0; margin: 0; padding: 0; border-radius: 0;
@@ -150,6 +150,25 @@ body.tdn-standalone .tdn-toggles { padding: 4px 12px 10px; }
   body.tdn-standalone .tdn-chips { padding-top: 6px; }
   body.tdn-standalone .tdn-readout { display: none; }
 }
+
+/* 紧凑模式：手机横屏（矮视口）或竖屏旋转后启用。
+   由 JS 统一加 body.tdn-compact —— 因为媒体查询看视口，
+   而竖屏旋转后的框是「竖屏视口」尺寸，媒体查询判断不到。 */
+body.tdn-compact .tdn-chips {
+  flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+  padding: 5px 10px 2px; gap: 4px; scrollbar-width: none;
+}
+body.tdn-compact .tdn-chips::-webkit-scrollbar { display: none; }
+body.tdn-compact .tdn-chip { font-size: 11px; padding: 3px 9px; white-space: nowrap; }
+body.tdn-compact .tdn-legend {
+  flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+  gap: 2px 10px; font-size: 11px; padding: 1px 10px 3px; scrollbar-width: none;
+}
+body.tdn-compact .tdn-legend::-webkit-scrollbar { display: none; }
+body.tdn-compact .tdn-legend .tdn-title { font-size: 12px; padding-right: 10px; }
+body.tdn-compact .tdn-leg b { font-size: 12px; }
+body.tdn-compact .tdn-toggles { padding: 3px 10px 6px; }
+body.tdn-compact .tdn-readout { display: none; }
 
 .tdn-back { position: fixed; left: 18px; bottom: 16px; z-index: 30;
   font: 500 13px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -188,3 +207,27 @@ body.tdn-standalone .tdn-toggles { padding: 4px 12px 10px; }
 .tdn-chip.tdn-all:hover { border-style: solid; color: #eaf1ff; }
 .tdn-chip.tdn-all.on { color: #06122b; border-style: solid;
   background: linear-gradient(135deg, #9ec5ff, #d9b8ff); }
+
+/* ===== 竖屏手机：一键横屏（CSS 旋转，兼容 iOS／微信）===== */
+.tdn-rot { display: none; }
+@media (orientation: portrait) {
+  .tdn-rot {
+    display: block; position: fixed; right: 12px; top: 12px; z-index: 60;
+    font: 600 13px/1 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #cfe0ff; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    background: rgba(12,20,44,.82); border: 1px solid rgba(120,160,255,.45);
+    backdrop-filter: blur(10px);
+  }
+}
+@media (orientation: portrait) {
+  body.tdn-rot-on .tdn-wrap {
+    position: fixed; top: 50%; left: 50%;
+    width: 100vh; height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center center;
+  }
+}
+body.tdn-rot-on { overflow: hidden; }
+/* 旋转后，返回键移到视觉左上，避免与图重叠 */
+body.tdn-rot-on .tdn-back { left: auto; right: 12px; bottom: 12px; }
+body.tdn-rot-on .tdn-rot { left: 12px; right: auto; }

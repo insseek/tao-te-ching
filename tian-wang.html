@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="tdn-html">
 
 <head>
   <meta charset="UTF-8">
@@ -14,8 +14,35 @@
   <div class="tdn-wrap" id="tiandao-net"></div>
 
   <a class="tdn-back" href="index.html#/00">← 返回《里探《道德经》新编》</a>
+  <button class="tdn-rot" id="tdn-rot" type="button">↻ 横屏</button>
 
   <script src="_script/tiandao-net.js"></script>
+  <script>
+    /* 竖屏手机：把整块界面旋转 90°，以横屏姿态铺满。
+       iOS Safari／微信均不支持锁定屏幕方向，故用 CSS 旋转。
+       另：紧凑模式由 JS 统一加 tdn-compact —— 媒体查询看的是视口，
+       而旋转后的框是竖屏视口尺寸，媒体查询判断不到。 */
+    (function () {
+      var body = document.body;
+      var btn = document.getElementById('tdn-rot');
+      var mq = window.matchMedia('(max-height: 560px)');
+      function sync() {
+        var rot = body.classList.contains('tdn-rot-on');
+        body.classList.toggle('tdn-compact', rot || mq.matches);
+        if (btn) btn.textContent = rot ? '↺ 竖屏' : '↻ 横屏';
+      }
+      if (btn) {
+        btn.addEventListener('click', function () {
+          body.classList.toggle('tdn-rot-on');
+          sync();
+        });
+      }
+      if (mq.addEventListener) mq.addEventListener('change', sync);
+      else if (mq.addListener) mq.addListener(sync);
+      window.addEventListener('orientationchange', function () { setTimeout(sync, 60); });
+      sync();
+    })();
+  </script>
 </body>
 
 </html>
