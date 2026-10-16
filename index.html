@@ -21,6 +21,41 @@
     <a class="zh" href="#/00">中文</a>
     <a class="en" href="#/en">EN</a>
   </div>
+
+  <!-- 微信公众号入口：常态只一个小图标，点开才显示二维码
+       （二维码缩到图标尺寸就扫不出来，必须分层） -->
+  <div id="tdn-wx">
+    <div id="tdn-wx-pop" role="dialog" aria-label="扫码关注里探微信公众号">
+      <img src="_media/wechat-qr.jpg" alt="里探微信公众号二维码" loading="lazy">
+      <p>微信扫码　关注「里探」</p>
+    </div>
+    <button id="tdn-wx-btn" type="button" aria-label="里探微信公众号" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M3 3h7.2v7.2H3V3zm1.8 1.8v3.6h3.6V4.8H4.8zM13.8 3H21v7.2h-7.2V3zm1.8 1.8v3.6h3.6V4.8h-3.6zM3 13.8h7.2V21H3v-7.2zm1.8 1.8v3.6h3.6v-3.6H4.8zM13.8 13.8h2.5v2.5h-2.5v-2.5zm4.7 0H21v2.5h-2.5v-2.5zM13.8 18.5h2.5V21h-2.5v-2.5zm4.7 0H21V21h-2.5v-2.5z"/>
+      </svg>
+    </button>
+  </div>
+  <script>
+    (function () {
+      var box = document.getElementById('tdn-wx');
+      var btn = document.getElementById('tdn-wx-btn');
+      if (!box || !btn) return;
+      function set(open) {
+        box.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        set(!box.classList.contains('open'));
+      });
+      document.addEventListener('click', function (e) {
+        if (!box.contains(e.target)) set(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') set(false);
+      });
+    })();
+  </script>
   <script>
     window.$docsify = {
       name: '里探《道德经》新编',

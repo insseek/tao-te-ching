@@ -77,3 +77,51 @@ body[data-page="/en.md"] #tdn-lang a.en { display: none; }
   #tdn-entry { top: auto; bottom: 16px; right: 14px; }
   #tdn-lang { right: auto; left: 14px; bottom: 20px; }
 }
+
+/* ===== 微信公众号入口 =====
+   常态只是一枚很小的图标（与语言切换一个量级，不抢阅读）；
+   点开才显示二维码——二维码缩到图标尺寸就扫不出来，必须分层。 */
+#tdn-wx { position: fixed; right: 18px; bottom: 48px; z-index: 62; }
+#tdn-wx-btn {
+  display: grid; place-items: center; width: 34px; height: 34px; padding: 0;
+  border-radius: 50%; cursor: pointer; color: #8fa3c6;
+  opacity: .42; border: 1px solid rgba(120,160,255,.22);
+  background: rgba(12,20,44,.72);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transition: opacity .25s ease, color .25s ease, border-color .25s ease, transform .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+#tdn-wx-btn:hover { opacity: 1; color: #dbe7ff; border-color: rgba(150,190,255,.6); }
+#tdn-wx-btn:active { transform: scale(.92); }
+#tdn-wx-btn svg { width: 17px; height: 17px; display: block; }
+#tdn-wx.open #tdn-wx-btn { opacity: 1; color: #07c160; border-color: rgba(7,193,96,.55); }
+
+#tdn-wx-pop {
+  position: absolute; right: 0; bottom: calc(100% + 10px);
+  width: 176px; padding: 11px 11px 9px; border-radius: 14px;
+  background: rgba(10,16,34,.96);
+  border: 1px solid rgba(120,160,255,.28);
+  box-shadow: 0 18px 44px -14px rgba(0,0,0,.92);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  opacity: 0; visibility: hidden; transform: translateY(7px) scale(.97);
+  transform-origin: 100% 100%;
+  transition: opacity .22s ease, transform .22s ease, visibility .22s;
+}
+#tdn-wx.open #tdn-wx-pop { opacity: 1; visibility: visible; transform: none; }
+#tdn-wx-pop img {
+  display: block; width: 100%; height: auto; box-sizing: border-box;
+  padding: 5px; border-radius: 9px; background: #fff;   /* 扫码需要浅底 */
+}
+#tdn-wx-pop p {
+  margin: 8px 0 0; text-align: center;
+  font: 500 11.5px/1.4 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: .06em; color: #a9c2ee;
+}
+@media (max-width: 780px) {
+  /* 手机：天道星图入口占着右下，图标要叠在它上方 */
+  #tdn-wx { right: 14px; bottom: 62px; }
+  #tdn-wx-pop { width: 154px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tdn-wx-pop, #tdn-wx-btn { transition: none; }
+}
