@@ -608,6 +608,31 @@
       if (hoverOn) { hoverOn = false; hoverWeb(); }
     });
 
+    /* 首次进入：把全部「源→用」提亮一次再回落。
+       常态只有 0.18，新人会以为图上没有线；一次"呼吸"足够让人发现它。
+       不打断已选中状态；prefers-reduced-motion 时跳过。 */
+    (function breatheOnce() {
+      try {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      } catch (e) { return; }
+      var rs = gRadial.querySelectorAll('path[data-rad]');
+      var gs = gRadial.querySelectorAll('path[data-rad-glow]');
+      var set = function (sel, v, tr) {
+        Array.prototype.forEach.call(sel, function (p) {
+          p.style.transition = tr ? 'stroke-opacity 1.1s ease' : '';
+          p.setAttribute('stroke-opacity', v);
+        });
+      };
+      setTimeout(function () {
+        if (svg.classList.contains('tdn-sel')) return;
+        set(rs, 0.52, 1); set(gs, 0.22, 1);
+        setTimeout(function () {
+          if (!svg.classList.contains('tdn-sel')) { set(rs, baseRad(), 1); set(gs, baseGlow(), 1); }
+          setTimeout(function () { set(rs, null, 0); set(gs, null, 0); }, 1300);
+        }, 1300);
+      }, 900);
+    })();
+
     host.appendChild(stage);
     /* onCoreClick 由 mount 挂上——抽屉的 open() 定义在 mount 里，
        build 取不到它，只能留一个回调口子。 */
