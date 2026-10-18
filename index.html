@@ -59,18 +59,6 @@
   <script>
     window.$docsify = {
       name: '里探《道德经》新编',
-      /* 显示层把句尾（章号）排成上标。数据永远是纯文本，排版只发生在渲染时。 */
-      markdown: {
-        config: function (md) {
-          md.renderer.rules.text = (function (orig) {
-            return function (tokens, idx, options, env, self) {
-              return orig(tokens, idx, options, env, self)
-                .replace(/（([一二三四五六七八九十]+)）/g, '<sup class="cn">（$1）</sup>');
-            };
-          })(md.renderer.rules.text || function (tokens, idx) { return tokens[idx].content; });
-        }
-      },
-      //repo: 'https://github.com/insseek/tao-te-ching',
       loadSidebar: true,
       subMaxLevel: 2,
       sidebarDisplayLevel: 1,
@@ -89,6 +77,12 @@
            docsify 自带 ?id= 在本站不生效——它在异步渲染完成前就去查元素，
            查不到便不滚动。改挂 doneEach：渲染完再滚。 */
         function (hook) {
+          hook.afterEach(function (html) {
+            /* 显示层把句尾（章号）排成上标。数据始终是纯文本，
+               只在渲染后的 HTML 上替换——这样 .md 里不会有任何标签。 */
+            return html.replace(/（([一二三四五六七八九十]+)）/g,
+              '<sup class="cn">（$1）</sup>');
+          });
           hook.doneEach(function () {
             var m = /[?&]id=([^&]+)/.exec(location.hash);
             if (!m) return;
