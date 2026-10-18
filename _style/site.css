@@ -125,3 +125,7 @@ body[data-page="/en.md"] #tdn-lang a.en { display: none; }
 @media (prefers-reduced-motion: reduce) {
   #tdn-wx-pop, #tdn-wx-btn { transition: none; }
 }
+
+/* 句尾（原属章号）排成上标：需要时找得到，不需要时不打扰 */
+.md-content sup.cn,
+.markdown-section sup.cn { font-size: .68em; color: #8a8a8a; vertical-align: .42em; margin-left: .04em; letter-spacing: 0; }

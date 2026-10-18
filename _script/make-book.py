@@ -39,6 +39,7 @@ blockquote { margin: .5em 0 1.0em; padding: .1em 0 .1em 1.05em;
 .ps  { margin: .9em 0 .4em; color:#333; }
 hr { border:0; border-top:1px solid #e2e2e2; margin:1.6em 0; }
 strong { font-weight: 700; }
+sup.cn { font-size:.68em; color:#8a8a8a; vertical-align:.42em; margin-left:.04em; letter-spacing:0; }
 a { color:#141414; text-decoration:none; }
 .cover { text-align:center; padding-top: 30%; page-break-after: always; }
 .cover h1 { font-size: 30pt; border:0; margin-bottom:.4em; }
@@ -60,6 +61,8 @@ def inline(s):
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
     s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', s)
     s = re.sub(r'`([^`]+)`', r'<code>\1</code>', s)
+    # 句尾（章号）排成上标——与站点同一套规则
+    s = re.sub(r'（([一二三四五六七八九十]+)）', r'<sup class="cn">（\1）</sup>', s)
     return s
 
 

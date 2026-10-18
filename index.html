@@ -59,6 +59,17 @@
   <script>
     window.$docsify = {
       name: '里探《道德经》新编',
+      /* 显示层把句尾（章号）排成上标。数据永远是纯文本，排版只发生在渲染时。 */
+      markdown: {
+        config: function (md) {
+          md.renderer.rules.text = (function (orig) {
+            return function (tokens, idx, options, env, self) {
+              return orig(tokens, idx, options, env, self)
+                .replace(/（([一二三四五六七八九十]+)）/g, '<sup class="cn">（$1）</sup>');
+            };
+          })(md.renderer.rules.text || function (tokens, idx) { return tokens[idx].content; });
+        }
+      },
       //repo: 'https://github.com/insseek/tao-te-ching',
       loadSidebar: true,
       subMaxLevel: 2,
