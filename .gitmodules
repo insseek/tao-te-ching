@@ -1,0 +1,3 @@
+[submodule "insseek-constraints"]
+	path = insseek-constraints
+	url = https://github.com/insseek/insseek-constraints.git
