@@ -44,6 +44,12 @@ a { color:#141414; text-decoration:none; }
 .cover h1 { font-size: 30pt; border:0; margin-bottom:.4em; }
 .cover .sub { font-size: 12pt; color:#555; letter-spacing:.12em; }
 .cover .meta { margin-top: 4em; font-size: 10pt; color:#666; line-height:2.1; }
+.colophon { page-break-before: always; page-break-after: always; padding-top: 22%;
+            font-size: 10pt; color:#333; line-height:2.2; text-align:center; }
+.colophon .t { font-size: 15pt; font-weight:600; letter-spacing:.1em; margin-bottom:1.4em; }
+.colophon .k { color:#777; }
+.colophon .lic { margin-top: 2.2em; font-size: 9.4pt; color:#555; line-height:1.9;
+                 text-align:left; border-top:1px solid #ddd; padding-top:1.1em; }
 /* @page 只在打印时生效；屏显与 EPUB 阅读器需自行留边 */
 @media screen { body { padding: 1.4em 1.7em; } }
 """
@@ -113,12 +119,32 @@ def build_html():
         '<div class="sub">完全使用原文　按内容逻辑重排　句末标原属章号</div>'
         '<div class="meta">原文　李耳<br/>新编　里探<br/>%s</div></div>' % (TITLE, DATE)
     )
+    front = (
+        '<div class="colophon"><div class="t">%s</div>'
+        '<div><span class="k">原文</span>　李耳</div>'
+        '<div><span class="k">新编</span>　里探</div>'
+        '<div><span class="k">序</span>　DeepSeek-V4.1-Flash</div>'
+        '<div><span class="k">版本</span>　第二版 · %s</div>'
+        '<div><span class="k">网址</span>　https://insseek-tao.netlify.app/</div>'
+        '<div class="lic">本书可自由复制、传播、打印。<br/>'
+        '转载与再分发请保留书名、作者署名与出处网址，不得删改来源，不得用于商业用途。<br/>'
+        '正文完全使用《道德经》原文，不缺不补；仅调整句序与分组，句末括注为原属章号。<br/>'
+        '所含原文属公有领域；新编结构、评说与天道星图 © 里探。</div></div>' % (TITLE, DATE)
+    )
+    back = (
+        '<div class="colophon"><div class="t">%s</div>'
+        '<div>原文　李耳　｜　新编　里探　｜　序　DeepSeek-V4.1-Flash</div>'
+        '<div>第二版 · %s</div>'
+        '<div>https://insseek-tao.netlify.app/</div>'
+        '<div class="lic">自由复制传播；转载保留署名与出处，不得删改来源，不得商用。</div></div>' % (TITLE, DATE)
+    )
+    os.makedirs(OUT, exist_ok=True)
+
     doc = (
         '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"/>'
         '<title>%s</title><style>%s</style></head><body>%s%s</body></html>'
-        % (TITLE, CSS, cover, body)
+        % (TITLE, CSS, cover, front + body + back)
     )
-    os.makedirs(OUT, exist_ok=True)
     hp = os.path.join(OUT, 'book.html')
     open(hp, 'w', encoding='utf-8').write(doc)
     return hp
@@ -144,10 +170,17 @@ def build_epub(hp):
     xhtml = xhtml.replace('<style>', '<link rel="stylesheet" type="text/css" href="style.css"/><style>', 1)
     uid = 'urn:uuid:' + str(uuid.uuid5(uuid.NAMESPACE_URL, 'insseek-tao-te-ching'))
     opf = """<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="bookid">
+<package xmlns="http://www.idpf.org/2007/opf" xmlns:opf="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="bookid">
  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <dc:title>%s</dc:title><dc:creator>%s</dc:creator><dc:language>zh-CN</dc:language>
+  <dc:title>%s</dc:title>
+  <dc:creator opf:role="aut">李耳</dc:creator>
+  <dc:creator opf:role="edt">里探</dc:creator>
+  <dc:contributor opf:role="ctb">DeepSeek-V4.1-Flash（序）</dc:contributor>
+  <dc:language>zh-CN</dc:language>
   <dc:date>%s</dc:date><dc:identifier id="bookid">%s</dc:identifier>
+  <dc:publisher>里探</dc:publisher>
+  <dc:source>https://insseek-tao.netlify.app/</dc:source>
+  <dc:rights>自由复制传播；转载保留署名与出处，不得删改来源，不得商用。</dc:rights>
  </metadata>
  <manifest>
   <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
@@ -155,7 +188,7 @@ def build_epub(hp):
   <item id="book" href="book.xhtml" media-type="application/xhtml+xml"/>
  </manifest>
  <spine toc="ncx"><itemref idref="book"/></spine>
-</package>""" % (TITLE, AUTHOR, DATE, uid)
+</package>""" % (TITLE, DATE, uid)
     ncx = """<?xml version="1.0" encoding="utf-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
  <head><meta name="dtb:uid" content="%s"/></head>

@@ -9,3 +9,5 @@
 - 关注里探。与你共同阅读思考进步
 
 [开始阅读](/99.md)｜<a href="tian-wang.html" target="_self">天道星图</a>
+
+<span style="font-size:.8em">下载：<a href="book/里探道德经新编.pdf" download>PDF</a>｜<a href="book/里探道德经新编.epub" download>EPUB</a></span>
