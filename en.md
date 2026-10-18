@@ -18,7 +18,7 @@ Every sentence of the original is kept — nothing added, nothing dropped — bu
 Each chapter has five sections: original text · character notes · literal rendering · commentary · related chapters.
 
 **2 · Grouping, clarifying, evaluating** — 88.md
-The 81 chapters are broken down into sentences and sorted into **4 parts / 21 groups**.
+The 81 chapters are broken down into sentences and sorted into **4 parts / 22 groups**.
 
 **3 · The re-edition** — 00.md
 All sentences re-ordered by meaning. Every sentence keeps a marker of its source chapter, so nothing becomes untraceable.
