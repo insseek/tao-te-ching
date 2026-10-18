@@ -177,7 +177,9 @@
       .then(function (t) {
         var cur = null, inPS = false, out = {};
         t.split('\n').forEach(function (l) {
-          var m = /^###\s+([A-D]\d+)[　\s]/.exec(l);
+          /* 分隔符是顿号「、」——换成它时只改了 parse00，漏了这里，
+             结果一个组都解析不出，抽屉里永远显示"未能读取原文"。 */
+          var m = /^###\s+([A-D]\d+)[、　\s]/.exec(l);
           if (m) { cur = m[1]; out[cur] = []; inPS = false; return; }
           if (/^##\s/.test(l) || /^#\s/.test(l)) { cur = null; inPS = false; return; }
           if (!cur) return;
@@ -628,7 +630,12 @@
         set(rs, 0.52, 1); set(gs, 0.22, 1);
         setTimeout(function () {
           if (!svg.classList.contains('tdn-sel')) { set(rs, baseRad(), 1); set(gs, baseGlow(), 1); }
-          setTimeout(function () { set(rs, null, 0); set(gs, null, 0); }, 1300);
+          /* 只清 transition，绝不把 stroke-opacity 写成 null——
+             写成 "null" 会让属性失效、线条回到全亮（曾因此全线发亮）。 */
+          setTimeout(function () {
+            Array.prototype.forEach.call(rs, function (p) { p.style.transition = ''; });
+            Array.prototype.forEach.call(gs, function (p) { p.style.transition = ''; });
+          }, 1300);
         }, 1300);
       }, 900);
     })();
@@ -707,7 +714,9 @@
       var relHTML =
         '<h4>牵连</h4>' +
         '<div class="tdn-rel-row"><span class="tdn-rel-k">源（我出于）</span>' + chips(use) + '</div>' +
-        '<div class="tdn-rel-row"><span class="tdn-rel-k">用（我流向）</span>' + chips(src) + '</div>' +
+        '<div class="tdn-rel-row"><span class="tdn-rel-k">用（我流向）</span>' + chips(src) + '</div>';
+      /* ↑ 这里曾多一个悬空的 "+"：它把下面的 loadDoc()（一个 Promise）
+         拼进了 relHTML，抽屉里于是出现 "[object Promise]"。 */
 
       loadDoc().then(function (doc) {
         var list = doc[id], vh = '';
