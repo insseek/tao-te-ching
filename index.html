@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8">
@@ -8,69 +8,62 @@
   <meta name="description" content="里探《道德经》新编 原文·解字·译文·评说">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="icon" href="_media/favicon.jpg">
-  <link rel="stylesheet" href="_style/docsify@5.min.css">
+  <!-- Docsify v5 核心主题 -->
+  <link rel="stylesheet" href="_style/docsify@5-themes-core.min.css">
+  <!-- 深色模式附加样式：默认跟随系统，可用右下角按钮手动切换 -->
+  <link id="theme-dark" rel="stylesheet" href="_style/docsify@5-themes-core-dark.min.css"
+    media="(prefers-color-scheme: dark)">
+  <!-- 站点自定义样式 -->
   <link rel="stylesheet" href="_style/site.css">
-</head>
+  <!-- 右下角主题按钮 / 公众号二维码样式 -->
+  <link rel="stylesheet" href="_style/custom.css">
 
-<body>
-  <div id="app"></div>
-
-  <a id="tdn-entry" href="tian-wang.html" title="天道星图：天网恢恢，疏而不失 —— 22 组 · 源流 · 共章相连">天道星图</a>
-
-  <div id="tdn-lang" title="语言 / Language">
-    <a class="zh" href="#/00">中文</a>
-    <a class="en" href="#/en">EN</a>
-  </div>
-
-  <!-- 微信公众号入口：常态只一个小图标，点开才显示二维码
-       （二维码缩到图标尺寸就扫不出来，必须分层） -->
-  <div id="tdn-wx">
-    <div id="tdn-wx-pop" role="dialog" aria-label="扫码关注里探微信公众号">
-      <img src="_media/wechat-qr.jpg" alt="里探微信公众号二维码" loading="lazy">
-      <p>微信扫码　关注「里探」</p>
-    </div>
-    <button id="tdn-wx-btn" type="button" aria-label="里探微信公众号" aria-expanded="false">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M3 3h7.2v7.2H3V3zm1.8 1.8v3.6h3.6V4.8H4.8zM13.8 3H21v7.2h-7.2V3zm1.8 1.8v3.6h3.6V4.8h-3.6zM3 13.8h7.2V21H3v-7.2zm1.8 1.8v3.6h3.6v-3.6H4.8zM13.8 13.8h2.5v2.5h-2.5v-2.5zm4.7 0H21v2.5h-2.5v-2.5zM13.8 18.5h2.5V21h-2.5v-2.5zm4.7 0H21V21h-2.5v-2.5z"/>
-      </svg>
-    </button>
-  </div>
   <script>
-    (function () {
-      var box = document.getElementById('tdn-wx');
-      var btn = document.getElementById('tdn-wx-btn');
-      if (!box || !btn) return;
-      function set(open) {
-        box.classList.toggle('open', open);
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    // 首屏渲染前恢复上次选择的主题，避免闪烁；没有记录时跟随系统
+    (() => {
+      try {
+        const saved = localStorage.getItem('docsify-theme');
+        if (saved === 'dark' || saved === 'light') {
+          document.getElementById('theme-dark').media =
+            saved === 'dark' ? 'all' : 'not all';
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (error) {
+        /* localStorage 不可用时忽略 */
       }
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        set(!box.classList.contains('open'));
-      });
-      document.addEventListener('click', function (e) {
-        if (!box.contains(e.target)) set(false);
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') set(false);
-      });
     })();
   </script>
+</head>
+
+<body class="loading sidebar-chevron-right">
+  <div id="app"></div>
+
+  <!-- 右下角悬浮控件（主题切换 / 公众号二维码，由脚本填充） -->
+  <div id="app-controls" class="app-controls"></div>
+
   <script>
     window.$docsify = {
       name: '里探《道德经》新编',
-      loadSidebar: true,
+      loadSidebar: '_sidebar.md',
+      loadNavbar: '_navbar.md',
       subMaxLevel: 2,
       sidebarDisplayLevel: 1,
       coverpage: true,
       search: {
         placeholder: '搜索',
+        paths: 'auto',
+        depth: 2,
       },
       pagination: {
         previousText: '上一章',
         nextText: '下一章',
         crossChapter: true,
         crossChapterText: true,
+      },
+      // 微信公众号二维码：填写 qrcode 后显示右下角按钮
+      wechat: {
+        qrcode: '_media/wechat-qr.jpg',
+        text: '微信扫码　关注「里探」',
       },
       plugins: [
         /* 定位到指定标题（天道星图抽屉里的「在新编中阅读」用它跳到当前组）。
@@ -103,13 +96,16 @@
       ],
     }
   </script>
-  <!-- Docsify v5 -->
-  <!-- 本地启动：docsify serve -->
+  <!-- Docsify v5.0.0 本体（必须最先加载） -->
   <script src="_script/docsify@5.min.js"></script>
-  <!-- search -->
-  <script src="_script/docsify5-search.min.js"></script>
-  <!-- pagination -->
-  <script src="_script/docsify5-pagination.min.js"></script>
+  <!-- 全文搜索插件 -->
+  <script src="_script/docsify-search@5.min.js"></script>
+  <!-- 分页插件 -->
+  <script src="_script/docsify-pagination@2.10.1.min.js"></script>
+  <!-- 深色模式切换（右下角按钮，双击恢复跟随系统） -->
+  <script src="_script/theme-toggle.js"></script>
+  <!-- 微信公众号二维码（读取 $docsify.wechat 配置） -->
+  <script src="_script/wechat.js"></script>
 </body>
 
 </html>

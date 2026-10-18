@@ -1,0 +1,161 @@
+/* ---------------------------------------------------------------------------
+   Docsify Starter — 自定义样式
+
+   右下角主题按钮与微信公众号二维码。
+   --------------------------------------------------------------------------- */
+
+.app-controls {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+#app-controls .app-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--sidebar-border-color, rgba(127, 127, 127, 0.25));
+  border-radius: 50%;
+  background: var(--color-bg, #fff);
+  color: var(--color-text, #333);
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+#app-controls .app-control:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  /* 覆盖核心主题给 button[type]:hover 加的整块描边 */
+  outline: 0;
+}
+
+#app-controls .app-control:focus-visible {
+  outline: 2px solid var(--theme-color, #0b85d7);
+  outline-offset: 2px;
+}
+
+#app-controls .app-control svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* 从上到下：主题 → 公众号（可选） */
+#app-controls #theme-toggle {
+  order: 2;
+}
+
+/* 可选微信公众号二维码 */
+.wechat-control {
+  position: relative;
+  order: 3;
+  display: flex;
+  flex: none;
+}
+
+.wechat-panel {
+  position: absolute;
+  right: calc(100% + 0.75rem);
+  bottom: 0;
+  z-index: 1;
+  width: min(230px, calc(100vw - 7rem));
+  padding: 10px;
+  border: 1px solid var(--sidebar-border-color, rgba(127, 127, 127, 0.25));
+  border-radius: 12px;
+  background: var(--color-bg, #fff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0.15s ease;
+}
+
+/* 透明桥接区域，避免鼠标从按钮移向卡片时经过间隙导致收起 */
+.wechat-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -0.75rem;
+  bottom: 0;
+  width: 0.75rem;
+}
+
+.wechat-control.is-open .wechat-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.wechat-qrcode {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.wechat-text {
+  margin: 0.55rem 0 0.05rem;
+  color: var(--theme-color-6, var(--theme-color, #0b85d7));
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media screen and (max-width: 640px) {
+  .app-controls {
+    right: 0.9rem;
+    bottom: 0.9rem;
+  }
+
+  #app-controls .app-control {
+    width: 36px;
+    height: 36px;
+  }
+
+  #app-controls .app-control svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media print {
+  .app-controls {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app-controls .app-control,
+  .wechat-panel {
+    transition: none;
+  }
+
+  #app-controls .app-control:hover {
+    transform: none;
+  }
+}

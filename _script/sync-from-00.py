@@ -11,7 +11,6 @@
            （共章弦、章→组反查、承重句总表已撤：新编把 81 章打散重排，
              共章共句不构成组间关系，见下方 sync_88 里的说明）
   天网     不在此脚本内——页面运行时直接 fetch 00.md 并现场解析（见 tiandao-net.js 的 parse00）
-  en.md    英文导览的组名对照
 
 用法：  python3 _script/sync-from-00.py [--check]
         --check 只报告差异，不写文件
@@ -192,53 +191,6 @@ def sync_88(D, V):
     return t
 
 
-# ---------------------------------------------------------------- en.md
-def sync_en(D):
-    """整表重建英文导览的组表。
-
-    中文名列取自 00.md；英文释义是人工写的，固化在 EN_GLOSS 里。
-    两张表必须**同时重写**——早先只改中文列，结果 B 组编号一变，
-    释义就整体错行（B3 道隐无名配上了「似或存」的释义）。
-    """
-    p = ROOT / 'en.md'
-    e = p.read_text(encoding='utf-8')
-    order = D['order']
-    rows = []
-    for g in order:
-        rows.append('| **%s** %s | %s | |' % (g, short(D['names'][g]), EN_GLOSS.get(g, '')))
-    e = replace_table(e, r'\| \| \| \|\n\|[-|]+\|\n', rows)
-    e = re.sub(r'^## The \d+ groups$', '## The %d groups' % len(order), e, flags=re.M)
-    if not CHECK:
-        p.write_text(e, encoding='utf-8')
-    return e
-
-
-# 旧简称 → 现简称（88.md 散文里可能残留）
-EN_GLOSS = {
-    'A1': 'The Dao gives birth to all things',
-    'B1': 'The Dao follows what is so of itself',
-    'B2': 'The usefulness of emptiness — elusive, as if present',
-    'B3': 'The Dao hides, unnamed',
-    'B4': 'Mysterious virtue: gives life, does not possess',
-    'B5': 'Mysterious sameness: inclusive, impartial',
-    'B6': 'The soft overcomes the hard — rising from below',
-    'B7': 'Fullness invites loss — falling from above',
-    'C1': 'Keeping to the Dao, embracing the One',
-    'C2': "Knowing the constant, living out one's years",
-    'C3': 'Always able to save people — no one discarded',
-    'C4': 'Knowing contentment, knowing when to stop',
-    'C5': 'The virtue of not contending',
-    'C6': 'The usefulness of emptiness',
-    'D1': 'Holding the Dao without losing it',
-    'D2': 'Ruling by non-action: no busyness, few words',
-    'D3': 'Not exalting virtue or worthies',
-    'D4': 'Keeping the people simple',
-    'D5': 'A small state with few people',
-    'D6': 'The virtue of humility — the soft overcoming the hard',
-    'D7': 'Not killing wantonly, not ruling by fear',
-    'D8': 'Not forcing the world by arms',
-}
-
 SENTENCES = [
     '天下有始，以为天下母。',
     '人法地，地法天，天法道，道法自然。',
@@ -290,8 +242,7 @@ def main():
     for w in D.get('warn', []):
         print('  ⚠️  ' + w)
     sync_88(D, V)
-    sync_en(D)
-    print('%s：88.md、en.md%s（天网已自行从 00.md 解析，无需同步）'
+    print('%s：88.md%s（天网已自行从 00.md 解析，无需同步）'
           % ('仅检查' if CHECK else '已重建', '' if CHECK else '；98.md 请另跑 make-clean.py'))
 
 
